@@ -1,0 +1,39 @@
+<h1>Devices</h1>
+
+<table class="table table-hover">
+    <colgroup>
+        <col style="width: 1px">
+        <col class="col-xs-4">
+        <col class="col-xs-4">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Location</th>
+        <th>Title</th>
+        <th>Address</th>
+        <th>Name</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="device in devices | byLocation:locationFilter">
+        <td>
+            <span class="glyphicon glyphicon-ok-sign" ng-class="{green: device.enabled, hide: !device.enabled}" tooltip="Active"></span>
+        </td>
+        <td>
+            <a href="#" editable-select="device.location" onbeforesave="updateLocation(device, $data)" e-ng-options="l.name for l in emptyOption.concat(locations) track by l.id">
+                {{ showLocation(device) }}
+            </a>
+        </td>
+        <td>
+            <span editable-text="device.title" onbeforesave="updateTitle(device, $data)">{{device.title}}</span>
+        </td>
+        <td ng-bind="device.addr"></td>
+        <td>
+            <span ng-bind="device.name" popover="{{device.desc}}" popover-trigger="mouseenter" popover-placement="left"></span>
+        </td>
+        <td ng-bind="device.enabled ? 'active':'disabled'"></td>
+    </tr>
+    </tbody>
+</table>

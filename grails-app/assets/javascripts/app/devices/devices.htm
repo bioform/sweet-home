@@ -1,0 +1,32 @@
+<div class="row row-offcanvas row-offcanvas-right">
+
+    <div class="col-xs-12 col-sm-9">
+        <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+        </p>
+
+        <div ng-include="'/assets/app/devices/list.htm'"></div>
+
+    </div><!--/span-->
+
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+
+        <h3>Location</h3>
+
+        <div class="list-group">
+            <a href="" class="list-group-item" ng-repeat="l in locations" ng-model="locationFilter[l.id]" btn-checkbox ng-bind="l.name"></a>
+        </div>
+        <form class="form-inline" ng-submit="addLocation()">
+            <table style="width: 100%">
+                <tr>
+                    <td>
+                        <input ng-model="newLocation" type="text" class="form-control" style="width: 100%" placeholder="New Location">
+                    </td>
+                    <td style="width: 20%; padding-left: 5px">
+                        <button class="btn" style="display: block">Add</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div><!--/span-->
+</div><!--/row-->

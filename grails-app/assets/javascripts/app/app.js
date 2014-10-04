@@ -2,8 +2,7 @@ var app = angular.module('sweetHome', [
     'ngResource',
     'ngSilent',
     'ngRoute',
-    'chieffancypants.loadingBar',
-    'angularFileUpload',
+    'angular-loading-bar',
     'localization',
     'ui.notify',
     'ui.bootstrap',
@@ -13,22 +12,23 @@ var app = angular.module('sweetHome', [
     'deviceModel',
     'deviceControllers',
     'activeMenu',
-    'locationModel'
+    'locationModel',
+    'commonDirectives'
 ]);
 
 app.config(['$locationProvider', '$routeProvider', 'cfpLoadingBarProvider', 'notificationServiceProvider',
     function($locationProvider, $routeProvider, cfpLoadingBarProvider, notificationServiceProvider) {
 
         // ajax loading bar
-        cfpLoadingBarProvider.includeSpinner = false;
+        cfpLoadingBarProvider.includeSpinner = true;
 
         // route
         $locationProvider.html5Mode(true);
-        /*
+
         $routeProvider.otherwise({
-                redirectTo: '/documents/files/'
+                redirectTo: '/devices'
             });
-        */
+
         // notifier settings
         var stack_bottomright = {"dir1": "up", "dir2": "left", "push": "top", "firstpos1": 25, "firstpos2": 25};
         notificationServiceProvider.setDefaults({

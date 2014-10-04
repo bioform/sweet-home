@@ -2,6 +2,7 @@ package sweethome
 
 import grails.converters.JSON
 import grails.transaction.Transactional
+import sweethome.sensors.SensorFactory
 
 class DeviceController {
 
@@ -22,6 +23,24 @@ class DeviceController {
 
         device.save()
 
+        // set previous status since we don't retrieve it from 1-Wire
+        device.enabled = request.JSON.enabled
+
         render device as JSON
+    }
+
+    def read(){
+        def device = Device.get(params.id)
+
+        if(device != null){
+            def sensor = SensorFactory.getByClassName(device.containerClass, device.addr)
+            if(sensor) {
+                render sensor.read() as JSON
+            } else {
+                render status: 500, text: "Cannot define appropriate sensor"
+            }
+        } else {
+            render status: 404, text: "Cannot find device with id \"${params.id}\""
+        }
     }
 }

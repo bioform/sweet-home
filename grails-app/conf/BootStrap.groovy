@@ -2,6 +2,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 
 import sweethome.Home
 import sweethome.OneWireServer
+import sweethome.sensors.SensorFactory
 
 class BootStrap {
 
@@ -18,6 +19,9 @@ class BootStrap {
 
         // Custom marshalling
         springContext.getBean( "customObjectMarshallers" ).register()
+
+        // register sensors implementation
+        SensorFactory.init()
     }
     def destroy = {
         if(oneWireServer){

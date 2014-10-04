@@ -21,8 +21,12 @@ class DeviceService {
                             name: it.name,
                             title: it.name,
                             desc: it.description,
-                            containerClass: 'TODO'
+                            containerClass: it.class.name
                     )
+                    device.save(flush: true, failOnError: true)
+                }
+                if(device.containerClass != it.class.name){
+                    device.containerClass = it.class.name
                     device.save(flush: true, failOnError: true)
                 }
             }

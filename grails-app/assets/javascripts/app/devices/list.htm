@@ -13,7 +13,7 @@
         <th>Title</th>
         <th>Address</th>
         <th>Name</th>
-        <th>Status</th>
+        <th>Readings</th>
     </tr>
     </thead>
     <tbody>
@@ -22,7 +22,7 @@
             <span class="glyphicon glyphicon-ok-sign" ng-class="{green: device.enabled, hide: !device.enabled}" tooltip="Active"></span>
         </td>
         <td>
-            <a href="#" editable-select="device.location" onbeforesave="updateLocation(device, $data)" e-ng-options="l.name for l in emptyOption.concat(locations) track by l.id">
+            <a href="#" editable-select="device.location" onbeforesave="updateDeviceLocation(device, $data)" e-ng-options="l.name for l in emptyOption.concat(locations) track by l.id">
                 {{ showLocation(device) }}
             </a>
         </td>
@@ -33,7 +33,9 @@
         <td>
             <span ng-bind="device.name" popover="{{device.desc}}" popover-trigger="mouseenter" popover-placement="left"></span>
         </td>
-        <td ng-bind="device.enabled ? 'active':'disabled'"></td>
+        <td>
+            <a href="" ng-init="readings = {formatted: 'read'}" ng-click="read(device, readings)" ng-bind="readings.formatted"></a>
+        </td>
     </tr>
     </tbody>
 </table>

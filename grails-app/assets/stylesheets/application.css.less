@@ -22,3 +22,20 @@ a.list-group-item {
 .green {
     color: green;
 }
+#locations {
+  span[class*="-pencil"]  {
+    &:hover {
+      color: #2a6496;
+      text-decoration: underline;
+    }
+  }
+  .editable-wrap {
+    display: block;
+    .editable-controls {
+      display: block;
+      .editable-input {
+        width: 100%;
+      }
+    }
+  }
+}

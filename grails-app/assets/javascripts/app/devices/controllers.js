@@ -23,11 +23,17 @@ angular.module( 'deviceControllers', [
         function ($scope, $filter, Device, Location) {
             $scope.devices = Device.query();
 
+            // read device value
+            $scope.read = function read(device, scope){
+                device.$read().success(function(readings){
+                    scope.formatted =  readings.formatted;
+                })
+            }
+
             // edit device title
             $scope.updateTitle = function(device, newTitle) {
                 device.title = newTitle;
-                var enabled = device.enabled;
-                return device.$save().then(function(data){ data.enabled = enabled; return data; });
+                return device.$save();
             };
             // edit device location
             $scope.emptyOption = [{value: null, text: 'Not set'}];
@@ -36,10 +42,9 @@ angular.module( 'deviceControllers', [
                 return (device.location && selected.length) ? selected[0].name : 'Not set';
             };
 
-            $scope.updateLocation = function(device, data) {
+            $scope.updateDeviceLocation = function updateDeviceLocation(device, data) {
                 device.location = data;
-                var enabled = device.enabled;
-                return device.$save().then(function(data){ data.enabled = enabled; return data; });
+                return device.$save();
             };
             // Location related part
             $scope.locationFilter = {};
@@ -48,5 +53,9 @@ angular.module( 'deviceControllers', [
                 var item = Location.save({name: $scope.newLocation});
                 $scope.locations.push(item);
             }
+            $scope.updateLocation = function updateLocation(l, data) {
+                l.name = data;
+                return l.$save();
+            };
      }])
 ;

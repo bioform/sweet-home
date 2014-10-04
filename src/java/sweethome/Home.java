@@ -38,8 +38,9 @@ public class Home {
         DSPortAdapter adapter = getAdapter();
         try {
             return adapter.getDeviceContainer(addr);
-        } finally {
+        } catch(Exception e) {
             close(adapter);
+            throw e;
         }
 
     }
@@ -50,7 +51,17 @@ public class Home {
         return adapter;
     }
 
-    private static void close(DSPortAdapter adapter) {
+    public static void close(DSPortAdapter adapter) {
+        adapter.endExclusive();
+        try {
+            adapter.freePort();
+        } catch (OneWireException e) {
+            // close quiet
+        }
+    }
+
+    public static void close(OneWireContainer container) {
+        DSPortAdapter adapter = container.getAdapter();
         adapter.endExclusive();
         try {
             adapter.freePort();

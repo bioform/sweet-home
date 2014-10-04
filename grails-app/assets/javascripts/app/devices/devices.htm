@@ -13,8 +13,11 @@
 
         <h3>Location</h3>
 
-        <div class="list-group">
-            <a href="" class="list-group-item" ng-repeat="l in locations" ng-model="locationFilter[l.id]" btn-checkbox ng-bind="l.name"></a>
+        <div id="locations" class="list-group">
+            <a href="" class="list-group-item" ng-repeat="l in locations" ng-model="locationFilter[l.id]" btn-checkbox>
+                <span class="glyphicon glyphicon-pencil pull-right" ng-click="edit.$show()" ng-hide="edit.$visible" stop-event></span>
+                <span ng-bind="l.name"  onbeforesave="updateLocation(l, $data)" editable-text="l.name" e-form="edit" buttons="no"></span>
+            </a>
         </div>
         <form class="form-inline" ng-submit="addLocation()">
             <table style="width: 100%">

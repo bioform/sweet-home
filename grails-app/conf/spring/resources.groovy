@@ -1,3 +1,4 @@
+import sweethome.SensorReadingsMarshaller
 import util.marshalling.CustomObjectMarshallers
 import sweethome.DeviceMarshaller
 
@@ -5,7 +6,8 @@ import sweethome.DeviceMarshaller
 beans = {
     customObjectMarshallers( CustomObjectMarshallers ) {
         marshallers = [
-                new DeviceMarshaller()
+                new DeviceMarshaller(),
+                new SensorReadingsMarshaller()
         ]
     }
 }

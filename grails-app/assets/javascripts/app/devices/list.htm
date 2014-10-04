@@ -34,7 +34,7 @@
             <span ng-bind="device.name" popover="{{device.desc}}" popover-trigger="mouseenter" popover-placement="left"></span>
         </td>
         <td>
-            <a href="" ng-init="readings = {formatted: 'read'}" ng-click="read(device, readings)" ng-bind="readings.formatted"></a>
+            <a href="" ng-if="device.readable" ng-init="readings = {formatted: 'read'}" ng-click="read(device, readings)" ng-bind="readings.formatted"></a>
         </td>
     </tr>
     </tbody>

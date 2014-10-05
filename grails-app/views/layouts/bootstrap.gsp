@@ -31,8 +31,8 @@
         <div class="collapse navbar-collapse" ng-controller="MenuCtrl">
           <ul class="nav navbar-nav">
             <li><a href="devices">Devices</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="scripts">Scripts</a></li>
+            <li><a href="scheduler">Scheduler</a></li>
           </ul>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->

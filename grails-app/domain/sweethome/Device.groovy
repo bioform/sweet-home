@@ -1,9 +1,7 @@
 package sweethome
 
-import sweethome.actors.ActorFactory
-import sweethome.sensors.SensorFactory
-
 class Device {
+    def sensorFactory
 
     String addr
     String name
@@ -17,7 +15,7 @@ class Device {
     boolean enabled
 
     boolean isReadable(){
-        SensorFactory.readable(containerClass, name)
+        sensorFactory.readable(containerClass, name)
     }
 
     static mapping = {

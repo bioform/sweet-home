@@ -1,4 +1,5 @@
 import sweethome.SensorReadingsMarshaller
+import sweethome.sensors.SensorFactory
 import util.marshalling.CustomObjectMarshallers
 import sweethome.DeviceMarshaller
 
@@ -9,5 +10,9 @@ beans = {
                 new DeviceMarshaller(),
                 new SensorReadingsMarshaller()
         ]
+    }
+
+    sensorFactory(SensorFactory) { bean ->
+        bean.autowire = 'byName'
     }
 }

@@ -1,6 +1,5 @@
 package sweethome
 
-import com.dalsemi.onewire.adapter.OneWireIOException
 import com.dalsemi.onewire.container.OneWireContainer
 import grails.transaction.Transactional
 
@@ -30,7 +29,7 @@ class DeviceService {
                     device.save(flush: true, failOnError: true)
                 }
             }
-        } catch (OneWireIOException e){
+        } catch (Exception e){
             log.error("Cannot get device list. " + e)
         }
         def devices = Device.list()

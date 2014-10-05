@@ -6,6 +6,8 @@ import sweethome.Home;
 import sweethome.sensors.annotations.SupportedDevices;
 import sweethome.sensors.annotations.Units;
 
+import java.util.function.Consumer;
+
 @Units("°C")
 @SupportedDevices({"DS18S20", "DS18B20"})
 public class TemperatureSensor implements Sensor {
@@ -46,6 +48,15 @@ public class TemperatureSensor implements Sensor {
     @Override
     public void write(Object value) {
 
+    }
+
+    @Override
+    public void runAndClose(Consumer<Sensor> lambda) {
+        try {
+            lambda.accept(this);
+        } finally {
+            Home.close((OneWireContainer)tc);
+        }
     }
 
     @Override

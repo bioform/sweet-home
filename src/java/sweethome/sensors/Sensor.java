@@ -1,6 +1,9 @@
 package sweethome.sensors;
 
-public interface Sensor {
+import java.io.Closeable;
+import java.util.function.Consumer;
+
+public interface Sensor extends Closeable {
 
     /**
      * Read raw and formatted value
@@ -15,9 +18,10 @@ public interface Sensor {
     public void write(Object value);
 
     /**
-     * Close connection to adapter
+     * Execute lambda and close sensor
+     * @param lambda
      */
-    public void close();
+    public void runAndClose(Consumer<Sensor> lambda);
 
     public class Readings {
         public Object val;

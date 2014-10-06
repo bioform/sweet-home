@@ -9,8 +9,9 @@ class Device {
     String desc
     String containerClass
     Location location
-    float coefficient
-    float correction
+    Float coefficient = 1f
+    Float correction = 0f
+    int frequencyOfMeasurements
     
     boolean enabled
 
@@ -19,8 +20,8 @@ class Device {
     }
 
     static mapping = {
-        coefficient defaultValue: 1
-        correction  defaultValue: 0
+        coefficient defaultValue: "1"
+        correction  defaultValue: "0"
     }
 
     static constraints = {

@@ -2,15 +2,12 @@ package sweethome.sensors;
 
 import com.dalsemi.onewire.container.OneWireContainer;
 import com.dalsemi.onewire.container.TemperatureContainer;
-import sweethome.Home;
 import sweethome.sensors.annotations.SupportedDevices;
 import sweethome.sensors.annotations.Units;
 
-import java.util.function.Consumer;
-
 @Units("°C")
 @SupportedDevices({"DS18S20", "DS18B20"})
-public class TemperatureSensor implements Sensor {
+public class TemperatureSensor extends AbstractSensor {
     // constant for temperature display option
     static final int CELSIUS    = 0x01;
     static final int FAHRENHEIT = 0x02;
@@ -27,7 +24,7 @@ public class TemperatureSensor implements Sensor {
     }
 
     @Override
-    public Readings read() throws Exception {
+    public Double read() throws Exception {
         byte[] state = tc.readDevice();
         double lastTemp;
         // perform a temperature conversion
@@ -42,7 +39,7 @@ public class TemperatureSensor implements Sensor {
         if (tempMode == FAHRENHEIT)
             lastTemp = convertToFahrenheit(lastTemp);
 
-        return new Readings(lastTemp, "" + (( int ) (lastTemp * 100)) / 100.0 + tempUnit);
+        return lastTemp;
     }
 
     @Override
@@ -51,17 +48,11 @@ public class TemperatureSensor implements Sensor {
     }
 
     @Override
-    public void runAndClose(Consumer<Sensor> lambda) {
-        try {
-            lambda.accept(this);
-        } finally {
-            Home.close((OneWireContainer)tc);
-        }
-    }
+    public String format(Object value) {
+        if(value == null) return null;
 
-    @Override
-    public void close() {
-        Home.close((OneWireContainer)tc);
+        Double lastTemp = toDouble(value);
+        return "" + (( int ) (lastTemp * 100)) / 100.0 + tempUnit;
     }
 
     /** Convert a temperature from Celsius to Fahrenheit. */
@@ -74,5 +65,21 @@ public class TemperatureSensor implements Sensor {
     static double convertToCelsius (double fahrenheitTemperature)
     {
         return ( double ) ((fahrenheitTemperature - 32.0) * 5.0 / 9.0);
+    }
+
+    static Double toDouble(Object val){
+        if(val == null){
+            return null;
+        }
+        else if(val instanceof  Double){
+            return (Double)val;
+        } else {
+            return Double.valueOf(String.valueOf(val));
+        }
+    }
+
+    @Override
+    protected OneWireContainer getContainer() {
+        return (OneWireContainer)tc;
     }
 }

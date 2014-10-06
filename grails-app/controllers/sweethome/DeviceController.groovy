@@ -2,6 +2,7 @@ package sweethome
 
 import grails.converters.JSON
 import grails.transaction.Transactional
+import util.SensorUtils
 
 class DeviceController {
 
@@ -35,7 +36,12 @@ class DeviceController {
         if(device != null){
             sensorFactory.get(device.containerClass, device.name, device.addr).runAndClose { sensor ->
                 if(sensor) {
-                    render sensor.read() as JSON
+                    def val = SensorUtils.addCorrection( sensor.read(), device.coefficient, device.correction)
+                    def formatted = sensor.format(val)
+
+                    def readings = [val: val, formatted: formatted]
+
+                    render readings as JSON
                 } else {
                     render status: 500, text: "Cannot define appropriate sensor"
                 }

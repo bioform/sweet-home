@@ -11,7 +11,7 @@ public abstract class AbstractSensor implements Sensor{
     protected abstract OneWireContainer getContainer();
 
     @Override
-    public void runAndClose(Consumer<Sensor> lambda) {
+    public void withSensor(Consumer<Sensor> lambda) {
         try {
             lambda.accept(this);
         } finally {

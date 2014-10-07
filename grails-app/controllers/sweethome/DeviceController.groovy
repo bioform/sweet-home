@@ -2,6 +2,7 @@ package sweethome
 
 import grails.converters.JSON
 import grails.transaction.Transactional
+import sweethome.sensors.Sensor
 import util.SensorUtils
 
 class DeviceController {
@@ -34,18 +35,22 @@ class DeviceController {
         def device = Device.get(params.id)
 
         if(device != null){
-            sensorFactory.get(device.containerClass, device.name, device.addr).runAndClose { sensor ->
-                if(sensor) {
-                    def val = SensorUtils.addCorrection( sensor.read(), device.coefficient, device.correction)
-                    def formatted = sensor.format(val)
+            Sensor sensor = sensorFactory.get(device.containerClass, device.name, device.addr)
+            if(sensor == null)
+                render status: 404, text: "Cannot find device with address \"${device.addr}\""
+            else
+                sensor.withSensor { ->
+                    if(sensor) {
+                        def val = SensorUtils.addCorrection( sensor.read(), device.coefficient, device.correction)
+                        def formatted = sensor.format(val)
 
-                    def readings = [val: val, formatted: formatted]
+                        def readings = [val: val, formatted: formatted]
 
-                    render readings as JSON
-                } else {
-                    render status: 500, text: "Cannot define appropriate sensor"
+                        render readings as JSON
+                    } else {
+                        render status: 500, text: "Cannot define appropriate sensor"
+                    }
                 }
-            }
         } else {
             render status: 404, text: "Cannot find device with id \"${params.id}\""
         }

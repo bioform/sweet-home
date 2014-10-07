@@ -11,6 +11,7 @@ import sweethome.sensors.annotations.Units;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,14 +49,18 @@ public class SensorFactory {
      * Find sensor by its container class name
      * @param containerClassName - device container class name
      * @param addr - device address
-     * @return
+     * @return sensor instance or null if device was not found
      */
-    public Sensor getByClassName(String containerClassName, String addr){
+    private Sensor getByClassName(String containerClassName, String addr){
         Sensor sensor = null;
         try {
             Constructor<Sensor> constructor = constructorMap.get(containerClassName);
             if (constructor != null) {
-                sensor = constructor.newInstance(Home.getDevice(addr));
+                OneWireContainer container = Home.getDevice(addr);
+                if(container == null){
+                    return null;
+                }
+                sensor = constructor.newInstance(container);
             }
         } catch (Exception e){
             new RuntimeException("Cannot instantiate sensor",e);
@@ -68,9 +73,9 @@ public class SensorFactory {
      * @param containerClassName - device container class name
      * @param name - device name
      * @param addr - device address
-     * @return
+     * @return sensor instance or null if device was not found
      */
-    public Sensor getByDeviceName(String containerClassName, String name, String addr){
+    private Sensor getByDeviceName(String containerClassName, String name, String addr){
         Sensor sensor = null;
         Class clazz = deviceMap.get(name);
         if(clazz != null){
@@ -78,7 +83,11 @@ public class SensorFactory {
                 Class parameterClass = Class.forName(containerClassName);
                 Constructor<Sensor> constructor = ConstructorUtils.getMatchingAccessibleConstructor(clazz, new Class[]{parameterClass});
                 if(constructor != null){
-                    sensor = constructor.newInstance(Home.getDevice(addr));
+                    OneWireContainer container = Home.getDevice(addr);
+                    if(container == null){
+                        return null;
+                    }
+                    sensor = constructor.newInstance(container);
                 }
             } catch (ClassNotFoundException e) {
                 log.error("Cannot find class for container \""+containerClassName+"\"");
@@ -121,7 +130,9 @@ public class SensorFactory {
         Set<Class<? extends Sensor>> sensorClasses = reflections.getSubTypesOf(Sensor.class);
 
         for(Class<? extends Sensor> clazz:sensorClasses){
-
+            if( (clazz.getModifiers() & Modifier.ABSTRACT) != 0){
+                continue;
+            }
             // check all constructors
             boolean hasAppropriateConstructor = false;
             Constructor[] constructors = clazz.getConstructors();

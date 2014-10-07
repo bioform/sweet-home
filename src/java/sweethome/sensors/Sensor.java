@@ -23,6 +23,6 @@ public interface Sensor extends Closeable {
      * Execute lambda and close sensor
      * @param lambda
      */
-    public void runAndClose(Consumer<Sensor> lambda);
+    public void withSensor(Consumer<Sensor> lambda);
 
 }

@@ -1,5 +1,7 @@
 package sweethome
 
+import sweethome.sensors.SensorMetaInfo
+
 class Device {
     def sensorFactory
 
@@ -14,9 +16,13 @@ class Device {
     int frequencyOfMeasurements
     
     boolean enabled
+    SensorMetaInfo metaInfo
 
     boolean isReadable(){
-        sensorFactory.readable(containerClass, name)
+        if( metaInfo == null){
+            metaInfo = sensorFactory.getMetaInfo(containerClass, name)
+        }
+        metaInfo.units != null
     }
 
     static mapping = {
@@ -29,5 +35,5 @@ class Device {
         enabled bindable:true
     }
     
-    static transients = ['enabled']
+    static transients = ['enabled', 'metaInfo']
 }

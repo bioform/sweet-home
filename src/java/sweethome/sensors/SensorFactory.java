@@ -1,16 +1,13 @@
 package sweethome.sensors;
 
-import com.dalsemi.onewire.OneWireException;
 import com.dalsemi.onewire.container.OneWireContainer;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.apache.log4j.Logger;
 import org.reflections.Reflections;
-import sweethome.Home;
+import sweethome.HomeNet;
 import sweethome.sensors.annotations.SupportedDevices;
-import sweethome.sensors.annotations.Units;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +40,7 @@ public class SensorFactory {
         Constructor<Sensor> constructor = findConstructor(containerClassName, name);
         if(constructor != null){
             try {
-                OneWireContainer container = Home.getDevice(addr);
+                OneWireContainer container = HomeNet.getDevice(addr);
                 if (container == null) {
                     return null;
                 }
@@ -66,30 +63,11 @@ public class SensorFactory {
     }
 
     private Constructor<Sensor> findConstructor(String containerClassName, String name){
-        Constructor<Sensor> constructor = getByDeviceName(containerClassName, name);
-        if(constructor == null){
-            constructor = getByClassName(containerClassName);
+        if(name == null){
+            throw new NullPointerException("Device \"name\" cannot be null");
         }
-        return constructor;
-    }
-
-    /**
-     * Find sensor by its container class name
-     * @param containerClassName - device container class name
-     * @return sensor instance or null if device was not found
-     */
-    private Constructor<Sensor> getByClassName(String containerClassName){
-        return constructorMap.get(containerClassName);
-    }
-
-    /**
-     * Find sensor by its name
-     * @param containerClassName - device container class name
-     * @param name - device name
-     * @return sensor instance or null if device was not found
-     */
-    private Constructor<Sensor> getByDeviceName(String containerClassName, String name){
         Constructor<Sensor> constructor = null;
+        // find by device name
         Class clazz = deviceMap.get(name);
         if(clazz != null){
             try {
@@ -99,34 +77,15 @@ public class SensorFactory {
                 log.error("Cannot find class for container \""+containerClassName+"\"");
             }
         }
+
+        // find by class name
+        if(constructor == null){
+            constructor = constructorMap.get(containerClassName);
+        }
         return constructor;
     }
 
-    /**
-     * Check is device "read()" results makes sense
-     * @param containerClassName - device container class name
-     * @param name - device name
-     * @return true if device sensor class annotated with "@Units(String)"
-     */
-    public boolean readable(String containerClassName, String name){
-        boolean readable = false;
-        try {
-            Class clazz = (name != null) ? deviceMap.get(name) : null;
-            if(clazz != null){
-                readable = clazz.getAnnotation(Units.class) != null;
-            } else {
-                Constructor<Sensor> constructor = constructorMap.get(containerClassName);
-                if (constructor != null) {
-                    readable = constructor.getDeclaringClass().getAnnotation(Units.class) != null;
-                }
-            }
-        } catch (Exception e){
-            // do nothing
-        }
-        return readable;
-    }
-
-    private synchronized void init() {
+    private void init() {
         Reflections reflections = new Reflections("com.dalsemi.onewire.container");
         Set<Class<? extends OneWireContainer>> containerClasses = reflections.getSubTypesOf(OneWireContainer.class);
 

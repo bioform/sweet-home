@@ -5,7 +5,7 @@ import com.dalsemi.onewire.container.OneWireContainer
 class RawController {
 
     def index() {
-        Collection<OneWireContainer> oneWireContainers = Home.devices
+        Collection<OneWireContainer> oneWireContainers = HomeNet.devices
         def devices = oneWireContainers.collect {
             [name: it.name, addr: it.addressAsString, desc: it.description]
         }

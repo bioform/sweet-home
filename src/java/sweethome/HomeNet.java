@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 
-public class Home {
-    private final static Logger log = Logger.getLogger(Home.class);
+public class HomeNet {
+    private final static Logger log = Logger.getLogger(HomeNet.class);
 
     public static Collection<OneWireContainer> getContainers() throws OneWireException {
         Collection<OneWireContainer> list = new LinkedList();

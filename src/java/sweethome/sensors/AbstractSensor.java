@@ -2,7 +2,7 @@ package sweethome.sensors;
 
 
 import com.dalsemi.onewire.container.OneWireContainer;
-import sweethome.Home;
+import sweethome.HomeNet;
 
 import java.util.function.Consumer;
 
@@ -15,13 +15,13 @@ public abstract class AbstractSensor implements Sensor{
         try {
             lambda.accept(this);
         } finally {
-            Home.close( getContainer() );
+            HomeNet.close(getContainer());
         }
     }
 
     @Override
     public void close() {
-        Home.close( getContainer() );
+        HomeNet.close(getContainer());
     }
 
 }

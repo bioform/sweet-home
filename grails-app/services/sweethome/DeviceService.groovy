@@ -9,7 +9,7 @@ class DeviceService {
     def list() {
         Set<String> addresses = new HashSet<>()
         try {
-            Collection<OneWireContainer> rawList = Home.getContainers()
+            Collection<OneWireContainer> rawList = HomeNet.getContainers()
             rawList.each {
                 String addr = it.addressAsString
                 addresses.add(addr)

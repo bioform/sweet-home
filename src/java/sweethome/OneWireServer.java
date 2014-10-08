@@ -5,9 +5,6 @@ import com.dalsemi.onewire.adapter.DSPortAdapter;
 import com.dalsemi.onewire.adapter.NetAdapterHost;
 import org.apache.log4j.Logger;
 
-/**
- * Created by andrey on 30.09.2014.
- */
 public class OneWireServer implements Runnable{
     private Logger log = Logger.getLogger(this.getClass());
     private NetAdapterHost netAdapter;

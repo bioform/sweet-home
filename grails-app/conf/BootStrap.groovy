@@ -1,6 +1,6 @@
 import org.springframework.web.context.support.WebApplicationContextUtils
 
-import sweethome.Home
+import sweethome.HomeNet
 import sweethome.OneWireServer
 
 class BootStrap {

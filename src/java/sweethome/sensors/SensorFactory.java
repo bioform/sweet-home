@@ -38,64 +38,68 @@ public class SensorFactory {
      * @return sensor or null if it wasn't found
      */
     public Sensor get(String containerClassName, String name, String addr){
-        Sensor sensor = getByDeviceName(containerClassName, name, addr);
-        if(sensor == null){
-            sensor = getByClassName(containerClassName, addr);
+        Sensor sensor = null;
+
+        Constructor<Sensor> constructor = findConstructor(containerClassName, name);
+        if(constructor != null){
+            try {
+                OneWireContainer container = Home.getDevice(addr);
+                if (container == null) {
+                    return null;
+                }
+                sensor = constructor.newInstance(container);
+            } catch (Exception e){
+                new RuntimeException("Cannot instantiate sensor",e);
+            }
         }
+
         return sensor;
+    }
+
+    public SensorMetaInfo getMetaInfo(String containerClassName, String name){
+        SensorMetaInfo meta = null;
+        Constructor<Sensor> constructor = findConstructor(containerClassName, name);
+        if(constructor != null){
+            meta = new SensorMetaInfo(constructor.getDeclaringClass());
+        }
+        return meta;
+    }
+
+    private Constructor<Sensor> findConstructor(String containerClassName, String name){
+        Constructor<Sensor> constructor = getByDeviceName(containerClassName, name);
+        if(constructor == null){
+            constructor = getByClassName(containerClassName);
+        }
+        return constructor;
     }
 
     /**
      * Find sensor by its container class name
      * @param containerClassName - device container class name
-     * @param addr - device address
      * @return sensor instance or null if device was not found
      */
-    private Sensor getByClassName(String containerClassName, String addr){
-        Sensor sensor = null;
-        try {
-            Constructor<Sensor> constructor = constructorMap.get(containerClassName);
-            if (constructor != null) {
-                OneWireContainer container = Home.getDevice(addr);
-                if(container == null){
-                    return null;
-                }
-                sensor = constructor.newInstance(container);
-            }
-        } catch (Exception e){
-            new RuntimeException("Cannot instantiate sensor",e);
-        }
-        return sensor;
+    private Constructor<Sensor> getByClassName(String containerClassName){
+        return constructorMap.get(containerClassName);
     }
 
     /**
      * Find sensor by its name
      * @param containerClassName - device container class name
      * @param name - device name
-     * @param addr - device address
      * @return sensor instance or null if device was not found
      */
-    private Sensor getByDeviceName(String containerClassName, String name, String addr){
-        Sensor sensor = null;
+    private Constructor<Sensor> getByDeviceName(String containerClassName, String name){
+        Constructor<Sensor> constructor = null;
         Class clazz = deviceMap.get(name);
         if(clazz != null){
             try {
                 Class parameterClass = Class.forName(containerClassName);
-                Constructor<Sensor> constructor = ConstructorUtils.getMatchingAccessibleConstructor(clazz, new Class[]{parameterClass});
-                if(constructor != null){
-                    OneWireContainer container = Home.getDevice(addr);
-                    if(container == null){
-                        return null;
-                    }
-                    sensor = constructor.newInstance(container);
-                }
+                constructor = ConstructorUtils.getMatchingAccessibleConstructor(clazz, new Class[]{parameterClass});
             } catch (ClassNotFoundException e) {
                 log.error("Cannot find class for container \""+containerClassName+"\"");
-            } catch (Exception e){
-                new RuntimeException("Cannot instantiate sensor", e);
             }
         }
-        return sensor;
+        return constructor;
     }
 
     /**

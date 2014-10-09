@@ -1,5 +1,6 @@
 package sweethome.sensors;
 
+import com.dalsemi.onewire.OneWireException;
 import com.dalsemi.onewire.container.OneWireContainer;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.apache.log4j.Logger;
@@ -23,33 +24,46 @@ public class SensorFactory {
         log.info("SensorFactory was initialized");
     }
 
-    public Sensor get(OneWireContainer container){
-        return get(container.getClass().getName(), container.getName(), container.getAddressAsString());
+    public Sensor get(String addr){
+        OneWireContainer container = null;
+        try {
+            container = HomeNet.getDevice(addr);
+        } catch (OneWireException e) {
+            log.error("Error during retrieving device. " + e);
+        }
+        if (container == null) {
+            return null;
+        }
+        Sensor sensor = get(container);
+        return sensor;
     }
 
-    /**
-     * Try to find sensor by sensor name, if it wasn't found then try to find sensor by container class name
-     * @param containerClassName
-     * @param name
-     * @param addr
-     * @return sensor or null if it wasn't found
-     */
-    public Sensor get(String containerClassName, String name, String addr){
+    public Sensor get(SensorMetaInfo meta, String addr){
         Sensor sensor = null;
-
-        Constructor<Sensor> constructor = findConstructor(containerClassName, name);
-        if(constructor != null){
+        Constructor<Sensor> constructor = meta.getConstructor();
+        if (constructor != null) {
             try {
                 OneWireContainer container = HomeNet.getDevice(addr);
                 if (container == null) {
                     return null;
                 }
                 sensor = constructor.newInstance(container);
-            } catch (Exception e){
-                new RuntimeException("Cannot instantiate sensor",e);
+            } catch (Exception e) {
+                new RuntimeException("Cannot instantiate sensor", e);
             }
         }
-
+        return sensor;
+    }
+    public Sensor get(OneWireContainer container){
+        Sensor sensor = null;
+        Constructor<Sensor> constructor = findConstructor(container.getClass().getName(), container.getName());
+        if (constructor != null) {
+            try {
+                sensor = constructor.newInstance(container);
+            } catch (Exception e) {
+                new RuntimeException("Cannot instantiate sensor", e);
+            }
+        }
         return sensor;
     }
 
@@ -57,7 +71,7 @@ public class SensorFactory {
         SensorMetaInfo meta = null;
         Constructor<Sensor> constructor = findConstructor(containerClassName, name);
         if(constructor != null){
-            meta = new SensorMetaInfo(constructor.getDeclaringClass());
+            meta = new SensorMetaInfo(constructor);
         }
         return meta;
     }

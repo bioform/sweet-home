@@ -19,10 +19,6 @@ public interface Sensor extends Closeable {
 
     public String format(Object value);
 
-    /**
-     * Execute lambda and close sensor
-     * @param lambda
-     */
-    public void withSensor(Consumer<Sensor> lambda);
+
 
 }

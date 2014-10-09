@@ -2,9 +2,12 @@ package sweethome
 
 import com.dalsemi.onewire.container.OneWireContainer
 import grails.transaction.Transactional
+import org.hibernate.SessionFactory
 
 @Transactional
 class DeviceService {
+
+    SessionFactory sessionFactory
 
     def list() {
         Set<String> addresses = new HashSet<>()
@@ -20,13 +23,15 @@ class DeviceService {
                             name: it.name,
                             title: it.name,
                             desc: it.description,
-                            containerClass: it.class.name
+                            containerClass: it.class.name,
+                            enabled: true
                     )
                     device.save(flush: true, failOnError: true)
                 }
-                if(device.containerClass != it.class.name){
+                else if(device.containerClass != it.class.name || !device.enabled){
                     device.containerClass = it.class.name
-                    device.save(flush: true, failOnError: true)
+                    device.enabled = true
+                    device.save()
                 }
             }
         } catch (Exception e){
@@ -37,9 +42,21 @@ class DeviceService {
             boolean rawEnabled = addresses.contains(it.addr)
             if (it.enabled != rawEnabled) {
                 it.enabled = rawEnabled
+                it.save()
             }
         }
+        flush() // flush data to DB
         return devices
+    }
+
+    /**
+     * Flush hibernate session to DB
+     */
+    private void flush(){
+        assert sessionFactory != null
+        def hibSession = sessionFactory.getCurrentSession()
+        assert hibSession != null
+        hibSession.flush()
     }
 
 }

@@ -1,5 +1,7 @@
 package sweethome
 
+import sweethome.sensors.Sensor
+import sweethome.sensors.SensorFactory
 import sweethome.sensors.SensorMetaInfo
 
 class Device {
@@ -16,13 +18,32 @@ class Device {
     int frequencyOfMeasurements
     
     boolean enabled
+
     SensorMetaInfo metaInfo
 
     boolean isReadable(){
+        SensorMetaInfo meta = getMetaInfo()
+        return meta != null && meta.units != null
+    }
+
+    SensorMetaInfo getMetaInfo(){
         if( metaInfo == null){
             metaInfo = sensorFactory.getMetaInfo(containerClass, name)
         }
-        metaInfo.units != null
+        return metaInfo
+    }
+
+    void withSensor(Closure closure){
+        Sensor sensor = null
+        try {
+            SensorMetaInfo meta = getMetaInfo()
+            if(meta != null){
+                sensor = sensorFactory.get(meta, addr)
+            }
+            closure(sensor);
+        } finally {
+            if(sensor != null) sensor.close();
+        }
     }
 
     static mapping = {
@@ -32,8 +53,7 @@ class Device {
 
     static constraints = {
         location nullable:true
-        enabled bindable:true
     }
     
-    static transients = ['enabled', 'metaInfo']
+    static transients = ['metaInfo']
 }

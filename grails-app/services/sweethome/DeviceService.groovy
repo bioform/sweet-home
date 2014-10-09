@@ -9,7 +9,26 @@ class DeviceService {
 
     SessionFactory sessionFactory
 
-    def list() {
+    @grails.events.Listener
+    def newDevices(List devices){
+        log.debug "${devices.size()} devices was added"
+    }
+
+    @grails.events.Listener
+    def enableDevices(List devices){
+        log.debug "${devices.size()} devices was enabled"
+    }
+
+    @grails.events.Listener
+    def disableDevices(List devices){
+        log.debug "${devices.size()} devices was disabled"
+    }
+
+    def synchronized sync(){
+        def newDevices = []
+        def enabledDevices = []
+        def disabledDevices = []
+
         Set<String> addresses = new HashSet<>()
         try {
             Collection<OneWireContainer> rawList = HomeNet.getContainers()
@@ -26,12 +45,14 @@ class DeviceService {
                             containerClass: it.class.name,
                             enabled: true
                     )
-                    device.save(flush: true, failOnError: true)
+                    newDevices << device.save()
                 }
                 else if(device.containerClass != it.class.name || !device.enabled){
+                    boolean wasEnabled = !device.enabled
                     device.containerClass = it.class.name
                     device.enabled = true
                     device.save()
+                    if( wasEnabled ) enabledDevices << device
                 }
             }
         } catch (Exception e){
@@ -43,9 +64,22 @@ class DeviceService {
             if (it.enabled != rawEnabled) {
                 it.enabled = rawEnabled
                 it.save()
+                if( !rawEnabled ) disabledDevices << it
             }
         }
         flush() // flush data to DB
+
+        // send notification
+        if( !newDevices.isEmpty() ){
+            event('newDevices', newDevices)
+        }
+        if( !enabledDevices.isEmpty() ){
+            event('enableDevices', enabledDevices)
+        }
+        if( !disabledDevices.isEmpty() ){
+            event('disableDevices', disabledDevices)
+        }
+
         return devices
     }
 

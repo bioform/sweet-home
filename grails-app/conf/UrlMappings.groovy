@@ -20,6 +20,7 @@ class UrlMappings {
         "/admin**"(controller: 'home', action:'index')
 
         "/raw/devices"(controller: 'raw', action: 'index')
+        "/jobs"(controller: 'job', action: 'index')
 
         "/devices/$id/read"(controller: 'device', action: 'read')
         "/devices/$id?"(resources:'device', includes:['index', 'save'])

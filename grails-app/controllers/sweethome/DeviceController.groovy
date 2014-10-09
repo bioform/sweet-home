@@ -8,11 +8,10 @@ import util.SensorUtils
 class DeviceController {
 
     def deviceService
-    def sensorFactory
 
     def index() {
-        def json = deviceService.list() as JSON
-        render json
+        def list = params.sync ? deviceService.sync() : Device.list()
+        render list as JSON
     }
 
     @Transactional

@@ -23,6 +23,10 @@ angular.module( 'deviceControllers', [
         function ($scope, $filter, Device, Location) {
             $scope.devices = Device.query();
 
+            $scope.sync = function sync(){
+                Device.sync().$promise.then(function(json) { $scope.devices = json });
+            }
+
             // read device value
             $scope.read = function read(device, scope){
                 device.$read().success(function(readings){

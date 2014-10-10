@@ -17,11 +17,20 @@ class DeviceController {
     @Transactional
     def save() {
         def device = Device.get(params.id)
-        device.title = request.JSON.title
-        device.tracked = request.JSON.tracked
 
-        def newLocation = request.JSON.location
-        device.location = newLocation.asBoolean() ? Location.get(newLocation.id) : null
+        if(request.JSON.title != null)
+            device.title = request.JSON.title
+
+        if(request.JSON.tracked != null)
+            device.tracked = !!request.JSON.tracked
+
+        if(request.JSON.frequency != null)
+            device.frequencyOfMeasurements = jsonInt('frequency')
+
+        if(request.JSON.location != null) {
+            def newLocation = request.JSON.location
+            device.location = newLocation.asBoolean() ? Location.get(newLocation.id) : null
+        }
 
         device.save()
 
@@ -50,5 +59,13 @@ class DeviceController {
         } else {
             render status: 404, text: "Cannot find device with id \"${params.id}\""
         }
+    }
+
+    private Integer jsonInt(param){
+        def val = request.JSON."$param"
+        if( !(val instanceof Integer) ){
+            val = val && val.isInteger() ? val.toInteger() :  null
+        }
+        return val
     }
 }

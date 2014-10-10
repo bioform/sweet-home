@@ -18,6 +18,7 @@ class DeviceMarshaller {
                     enabled: device.enabled,
                     readable: device.readable,
                     tracked: device.tracked,
+                    frequency: device.frequencyOfMeasurements,
                     location: device.location ? [
                                 id: device.location.id,
                                 name: device.location.name

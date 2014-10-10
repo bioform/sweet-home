@@ -36,9 +36,18 @@ angular.module( 'deviceControllers', [
 
             $scope.save = function save(device){ device.$save() };
 
-            // edit device title
-            $scope.updateTitle = function updateTitle(device, newTitle) {
-                device.title = newTitle;
+            // edit device attributes
+            $scope.isIntOrEmpty = function isInt(value){
+                if(value.length === 0 || !$.trim(value)) return null; // empty string is OK
+
+                var ok = !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10));
+                return ok ? null:"must be an integer or empty"
+            }
+            $scope.update = function update(device, attr, data, validationFunc) {
+                var errors = validationFunc ? validationFunc(data) : null
+                if( errors ) return errors;
+
+                device[attr] = data;
                 return device.$save();
             };
 
@@ -49,10 +58,6 @@ angular.module( 'deviceControllers', [
                 return (device.location && selected.length) ? selected[0].name : 'Not set';
             };
 
-            $scope.updateDeviceLocation = function updateDeviceLocation(device, data) {
-                device.location = data;
-                return device.$save();
-            };
             // Location related part
             $scope.locationFilter = {};
             $scope.locations = Location.query()

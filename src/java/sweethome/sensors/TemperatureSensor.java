@@ -3,11 +3,13 @@ package sweethome.sensors;
 import com.dalsemi.onewire.container.OneWireContainer;
 import com.dalsemi.onewire.container.TemperatureContainer;
 import sweethome.HomeNet;
+import sweethome.sensors.annotations.FrequencyOfMeasurements;
 import sweethome.sensors.annotations.SupportedDevices;
 import sweethome.sensors.annotations.Units;
 
 @Units("°C")
 @SupportedDevices({"DS18S20", "DS18B20"})
+@FrequencyOfMeasurements(10)
 public class TemperatureSensor implements Sensor {
     // constant for temperature display option
     static final int CELSIUS    = 0x01;

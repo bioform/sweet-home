@@ -23,12 +23,12 @@
             <span class="glyphicon glyphicon-ok-sign" ng-class="{green: device.enabled, hide: !device.enabled}" tooltip="Active"></span>
         </td>
         <td>
-            <a href="#" editable-select="device.location" onbeforesave="updateDeviceLocation(device, $data)" e-ng-options="l.name for l in emptyOption.concat(locations) track by l.id">
+            <a href="#" editable-select="device.location" onbeforesave="update(device, 'location', $data)" e-ng-options="l.name for l in emptyOption.concat(locations) track by l.id">
                 {{ showLocation(device) }}
             </a>
         </td>
         <td>
-            <span editable-text="device.title" onbeforesave="updateTitle(device, $data)">{{device.title}}</span>
+            <span editable-text="device.title" onbeforesave="update(device, 'title', $data)">{{device.title}}</span>
         </td>
         <td ng-bind="device.addr"></td>
         <td>
@@ -38,9 +38,13 @@
             <a href="" ng-if="device.readable" ng-init="readings = {formatted: 'read'}" ng-click="read(device, readings)" ng-bind="readings.formatted"></a>
         </td>
         <td>
-            <input type="checkbox" ng-model="device.tracked" ng-change="save(device)">
-            &nbsp;
-            <a href="" class="glyphicon glyphicon-pencil"></a>
+            <div ng-if="device.readable">
+                <input type="checkbox" ng-model="device.tracked" ng-change="save(device)">
+                &nbsp;
+                <span class="item-wrapper frequency">
+                    <a editable-text="device.frequency" onbeforesave="update(device, 'frequency', $data, isIntOrEmpty)" href="" class="glyphicon glyphicon-pencil"></a>
+                </span>
+            </div>
         </td>
     </tr>
     </tbody>

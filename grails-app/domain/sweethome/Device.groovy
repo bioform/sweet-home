@@ -16,7 +16,10 @@ class Device {
     Float coefficient = 1f
     Float correction = 0f
 
-    int frequencyOfMeasurements
+    /**
+     * Frequency Of Measurements in seconds (it can be null)
+     */
+    Integer frequencyOfMeasurements
     boolean tracked
     
     boolean enabled
@@ -55,6 +58,7 @@ class Device {
 
     static constraints = {
         location nullable:true
+        frequencyOfMeasurements nullable:true
     }
     
     static transients = ['metaInfo']

@@ -3,11 +3,14 @@ package sweethome
 import com.dalsemi.onewire.container.OneWireContainer
 import grails.transaction.Transactional
 import org.hibernate.SessionFactory
+import sweethome.sensors.SensorFactory
+import sweethome.sensors.SensorMetaInfo
 
 @Transactional
 class DeviceService {
 
     SessionFactory sessionFactory
+    SensorFactory  sensorFactory
 
     def synchronized sync(){
         def newDevices = []
@@ -21,16 +24,28 @@ class DeviceService {
                 String addr = it.addressAsString
                 addresses.add(addr)
                 Device device = Device.findByAddr(addr)
+
                 if ( device == null ) {
+                    SensorMetaInfo meta = sensorFactory.getMetaInfo(it.class.name, it.name)
                     device = new Device(
                             addr: addr,
                             name: it.name,
                             title: it.name,
                             desc: it.description,
                             containerClass: it.class.name,
-                            enabled: true
+                            enabled: true,
+                            frequencyOfMeasurements: meta?.getFrequencyOfMeasurements()
                     )
-                    newDevices << device.save()
+                    if( device.save() ){
+                        newDevices << device
+                    } else {
+                        StringBuilder sb = new StringBuilder()
+                        if( device.hasErrors() ) {
+                            device.errors.each { sb << "\n$it" }
+                        }
+                        log.error "Cannot register device \"${it.name}\" (addr: \"$addr\"). $sb"
+                    }
+
                 }
                 else if(device.containerClass != it.class.name || !device.enabled){
                     boolean wasEnabled = !device.enabled

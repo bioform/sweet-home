@@ -15,7 +15,9 @@ class Device {
     Location location
     Float coefficient = 1f
     Float correction = 0f
+
     int frequencyOfMeasurements
+    boolean tracked
     
     boolean enabled
 

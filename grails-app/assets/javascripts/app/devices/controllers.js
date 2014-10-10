@@ -34,11 +34,14 @@ angular.module( 'deviceControllers', [
                 })
             }
 
+            $scope.save = function save(device){ device.$save() };
+
             // edit device title
-            $scope.updateTitle = function(device, newTitle) {
+            $scope.updateTitle = function updateTitle(device, newTitle) {
                 device.title = newTitle;
                 return device.$save();
             };
+
             // edit device location
             $scope.emptyOption = [{value: null, text: 'Not set'}];
             $scope.showLocation = function showLocation(device) {

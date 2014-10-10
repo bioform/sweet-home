@@ -18,6 +18,7 @@ class DeviceController {
     def save() {
         def device = Device.get(params.id)
         device.title = request.JSON.title
+        device.tracked = request.JSON.tracked
 
         def newLocation = request.JSON.location
         device.location = newLocation.asBoolean() ? Location.get(newLocation.id) : null

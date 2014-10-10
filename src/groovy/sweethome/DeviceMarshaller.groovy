@@ -17,6 +17,7 @@ class DeviceMarshaller {
                     containerClass: device.containerClass,
                     enabled: device.enabled,
                     readable: device.readable,
+                    tracked: device.tracked,
                     location: device.location ? [
                                 id: device.location.id,
                                 name: device.location.name

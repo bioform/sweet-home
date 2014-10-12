@@ -5,7 +5,8 @@ import sweethome.OneWireServer
 
 class BootStrap {
 
-    def sensorFactory
+    def trackingService
+
     private OneWireServer oneWireServer
     private Thread oneWireServerThread
 
@@ -19,6 +20,8 @@ class BootStrap {
 
         // Custom marshalling
         springContext.getBean( "customObjectMarshallers" ).register()
+
+        trackingService.init()
     }
     def destroy = {
         if(oneWireServer){

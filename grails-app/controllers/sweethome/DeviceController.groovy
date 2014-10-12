@@ -8,6 +8,7 @@ import util.SensorUtils
 class DeviceController {
 
     def deviceService
+    def trackingService
 
     def index() {
         def list = params.sync ? deviceService.sync() : Device.list()
@@ -17,6 +18,8 @@ class DeviceController {
     @Transactional
     def save() {
         def device = Device.get(params.id)
+
+        boolean wasTracked = device.tracked
 
         if(request.JSON.title != null)
             device.title = request.JSON.title
@@ -32,7 +35,14 @@ class DeviceController {
             device.location = newLocation.asBoolean() ? Location.get(newLocation.id) : null
         }
 
-        device.save()
+        if( device.save() && device.enabled){
+            if(device.tracked != wasTracked){
+                if(device.tracked)
+                    trackingService.enableDevices([device])
+                else
+                    trackingService.disableDevices([device])
+            }
+        }
 
         // set previous status since we don't retrieve it from 1-Wire
         device.enabled = request.JSON.enabled

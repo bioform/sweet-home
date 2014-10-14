@@ -1,0 +1,27 @@
+<h1>Scripts</h1>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Cron Expression</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="script in scripts">
+            <td>
+                <span ng-bind="script.name"></span>
+            </td>
+            <td>
+                <span ng-bind="script.cronExpression"></span>
+            </td>
+            <td>
+                <input type="checkbox" ng-model="script.active" ng-change="save(script)" ng-disabled="!script.cronExpression">
+            </td>
+            <td>
+                <a ng-href="script/{{script.id}}" class="glyphicon glyphicon-pencil"></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

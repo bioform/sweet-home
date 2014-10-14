@@ -13,6 +13,7 @@ var app = angular.module('sweetHome', [
     'deviceControllers',
     'activeMenu',
     'locationModel',
+    'scriptModel',
     'commonDirectives'
 ]);
 

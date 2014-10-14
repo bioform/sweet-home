@@ -25,6 +25,7 @@ class UrlMappings {
         "/devices/$id/read"(controller: 'device', action: 'read')
         "/devices/$id?"(resources:'device', includes:['index', 'save'])
         "/locations/$id?"(resources:'location', includes:['index', 'save'])
+        "/scripts/$id?"(resources:'script', includes:['index', 'save'])
 
 
         "500"(view:'/error')

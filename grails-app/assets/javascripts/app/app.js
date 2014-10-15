@@ -14,6 +14,7 @@ var app = angular.module('sweetHome', [
     'activeMenu',
     'locationModel',
     'scriptModel',
+    'scriptControllers',
     'commonDirectives'
 ]);
 

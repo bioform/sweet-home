@@ -5,19 +5,28 @@ import grails.transaction.Transactional
 
 class ScriptController {
     def index() {
-        def json = Script.list() as JSON
+        def json
+        if(params.id != null){
+            json = Script.get(params.id) as JSON
+        } else {
+            json = Script.list() as JSON
+        }
+
         render json
     }
 
     @Transactional
     def save() {
         def script = params.id ? Script.get(params.id) : new Script()
-        location.name = request.JSON.name
-        location.code = request.JSON.code
-        location.cronExpression = request.JSON.cronExpression
-        location.active = request.JSON.active
-        location.save()
+        script.name = request.JSON.name
+        script.code = request.JSON.code
+        script.cronExpression = request.JSON.cronExpression
 
-        render location as JSON
+        if(request.JSON.active != null)
+            script.active = !!request.JSON.active
+
+        script.save()
+
+        render script as JSON
     }
 }

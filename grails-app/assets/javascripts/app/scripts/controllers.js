@@ -9,7 +9,7 @@ angular.module( 'scriptControllers', [
                 controller: 'ScriptListCtrl',
                 menu: 'scripts'
             }).
-            when('/script/:id', {
+            when('/script/:id?', {
                 templateUrl: '/assets/app/scripts/edit.htm',
                 controller: 'ScriptEditCtrl',
                 menu: 'scripts'
@@ -25,12 +25,12 @@ angular.module( 'scriptControllers', [
         }])
     .controller('ScriptEditCtrl', ['$scope','$filter', 'Script', '$routeParams',
         function ($scope, $filter, Script, $routeParams) {
-
-            if(angular.isUndefined(val) || val === null ) {
-                $scope.script = new Script({});
+            var id = $routeParams.id;
+            if(angular.isUndefined(id) || id === null ) {
+                $scope.script = new Script({code: "// Put your code here\n"});
             }
             else {
-                $scope.script = Script.get($routeParams.id);
+                $scope.script = Script.get({id: id});
             }
 
             $scope.save = function save(){ $scope.script.$save() };

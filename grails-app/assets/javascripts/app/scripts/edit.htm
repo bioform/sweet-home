@@ -1,29 +1,40 @@
-<h1>Script</h1>
-
-
-<form role="form" ng-submit="save()">
+<div class="page-header">
     <!-- toolbar -->
-    <div ng-include="scripts/editToolbar.htm"></div>
+    <div ng-include="'/assets/app/scripts/editToolbar.htm'"></div>
+
+    <h1>Script</h1>
+</div>
+
+
+<form id="script_form" role="form" class="form-horizontal" ng-submit="save()">
 
     <!-- edit form -->
     <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" ng-model="script.name" placeholder="Enter script name">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="name" ng-model="script.name" placeholder="Enter script name">
+        </div>
     </div>
     <div class="form-group">
-        <label for="cronExpression">Cron Expression</label>
-        <input type="text" class="form-control" id="cronExpression" ng-model="script.cronExpression" placeholder="Cron Expression">
-    </div>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox"> Active
-        </label>
+        <label for="cronExpression" class="col-sm-2 control-label">Cron Expression</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="cronExpression" ng-model="script.cronExpression" placeholder="Cron Expression">
+        </div>
     </div>
     <div class="form-group">
-        <label for="code">Script Code</label>
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Activate me
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
         <textarea ui-codemirror="cmOptions" id="code" ng-model="script.code"></textarea>
     </div>
 
     <!-- toolbar -->
-    <div ng-include="scripts/editToolbar.htm"></div>
+    <div ng-include="'/assets/app/scripts/editToolbar.htm'"></div>
+    <div class="clearfix"></div>
 </form>

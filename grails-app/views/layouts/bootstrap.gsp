@@ -9,6 +9,10 @@
 
     <title><g:layoutTitle default="Sweet Home"/></title>
 
+    <script>
+        var webSocketLink = "${createLink(uri: '/stomp')}";
+    </script>
+
     <!-- Bootstrap core CSS -->
     <asset:stylesheet src="application.css"/>
     <asset:javascript src="application.js"/>
@@ -34,6 +38,9 @@
             <li><a href="scripts">Scripts</a></li>
             <li><a href="scheduler">Scheduler</a></li>
           </ul>
+          <div class="navbar-form">
+            <a href="" ng-model="showLogs" btn-checkbox class="btn btn-default">Logs</a>
+          </div>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->
     </div><!-- /.navbar -->
@@ -49,6 +56,26 @@
       </footer>
 
     </div><!--/.container-->
+
+    <div class="panel panel-default navbar-fixed-bottom" ng-controller="LogPanelCtrl" ng-show="showLogs">
+      <div class="panel-heading">
+          <h3 class="panel-title">Logs</h3>
+      </div>
+      <div class="panel-body">
+          <table class="table table-hover table-condensed">
+              <colgroup>
+                  <col class="col-xs-1">
+                  <col class="col-xs-7">
+              </colgroup>
+              <tbody>
+                  <tr ng-repeat="log in logs" ng-class="log.level">
+                      <td ng-bind="log.date | date:'yyyy-MM-dd HH:mm:ss'"></td>
+                      <td ng-bind="log.msg"></td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+    </div>
 
   </body>
 </html>

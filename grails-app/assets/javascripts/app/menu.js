@@ -2,8 +2,8 @@ angular.module( 'activeMenu', [
 
 ])
 
-    .controller('MenuCtrl', ['$rootScope', '$location', '$route', '$element',
-        function($rootScope, $location, $route, $element) {
+    .controller('MenuCtrl', ['$rootScope', '$scope', '$location', '$route', '$element',
+        function($rootScope, $scope, $location, $route, $element) {
 
             $rootScope.$on('$locationChangeSuccess', function(event){
                 var url = $location.path();
@@ -18,6 +18,8 @@ angular.module( 'activeMenu', [
                     }
                 });
             })
+
+            $scope.$watch("showLogs", function(val){ $rootScope.showLogs = val; });
 
         }])
 ;

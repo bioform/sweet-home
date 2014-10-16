@@ -59,7 +59,8 @@ grails.project.dependency.resolution = {
 
     plugins {
         // plugins for the build system only
-        build ":tomcat:7.0.55"
+        build ":tomcat:8.0.14.1"
+        compile ':spring-websocket:1.1.0'
 
         // plugins for the compile step
         compile ":scaffolding:2.1.2"

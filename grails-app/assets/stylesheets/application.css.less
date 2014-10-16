@@ -18,7 +18,7 @@ a.list-group-item {
 a.glyphicon {
   text-decoration: none;
 }
-.table>tbody>tr>td {
+.editable-cells>tbody>tr>td {
     height: 45px;
     vertical-align: middle;
 }
@@ -54,4 +54,16 @@ a.glyphicon {
 
 input.ng-invalid {
   border-color: red;
+}
+
+.panel.navbar-fixed-bottom {
+  margin-bottom: 0;
+  height: 40%;
+  overflow: auto;
+  .panel-body {
+    padding: 0;
+  }
+  .table {
+    margin-bottom: 0;
+  }
 }

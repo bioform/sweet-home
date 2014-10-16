@@ -6,14 +6,13 @@ import grails.transaction.Transactional
 import org.quartz.SimpleTrigger
 import org.quartz.Trigger
 
-import javax.annotation.PostConstruct
-
 @Transactional
 class TrackingService {
 
     def deviceService
     def jobManagerService
     def quartzScheduler
+    def brokerMessagingTemplate
 
     def init(){
         synchronized (deviceService){
@@ -24,20 +23,32 @@ class TrackingService {
 
     @grails.events.Listener
     def newDevices(List devices){
-        log.debug "${devices.size()} devices was added"
+
+        String msg = "${devices.size()} devices was added"
+        log.debug msg
+        brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'success', msg: msg]
+
         schedule devices
     }
 
     @grails.events.Listener
     def enableDevices(List<Device> devices){
-        log.debug "${devices.size()} devices was enabled"
+
+        String msg = "${devices.size()} devices was enabled"
+        log.debug msg
+        brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'info', msg: msg]
+
         schedule devices
     }
 
     @grails.events.Listener
     def disableDevices(List<Device> devices){
         int count = 0
-        log.debug "${devices.size()} devices was disabled"
+
+        String msg = "${devices.size()} devices was disabled"
+        log.debug msg
+        brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'danger', msg: msg]
+
         Map<String, TriggerDescriptor> triggersMap = getTrackingJobTriggers()
         devices.each {
             TriggerDescriptor triggerDescriptor = triggersMap.get(it.id.toString())

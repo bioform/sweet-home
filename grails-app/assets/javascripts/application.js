@@ -7,6 +7,7 @@
 //
 //= require vendor/jquery-2.1.1.min
 //= require vendor/bootstrap.min
+//= require spring-websocket
 //= require vendor/angular.min
 //= require vendor/ngSilent
 //= require vendor/angular-route.min

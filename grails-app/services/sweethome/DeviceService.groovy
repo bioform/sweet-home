@@ -11,6 +11,7 @@ class DeviceService {
 
     SessionFactory sessionFactory
     SensorFactory  sensorFactory
+    String lastException
 
     def synchronized sync(){
         def newDevices = []
@@ -55,8 +56,13 @@ class DeviceService {
                     if( wasEnabled ) enabledDevices << device
                 }
             }
+            lastException = null
         } catch (Exception e){
-            log.error("Cannot get device list. " + e)
+            String msg = "Cannot get device list. " + e
+            if(msg != lastException){
+                log.error msg
+                lastException = msg
+            }
         }
         def devices = Device.list()
         devices.each {

@@ -4,6 +4,9 @@ import grails.converters.JSON
 import grails.transaction.Transactional
 
 class ScriptController {
+
+    def scriptingService
+
     def index() {
         def json
         if(params.id != null){
@@ -28,5 +31,20 @@ class ScriptController {
         script.save()
 
         render script as JSON
+    }
+
+    def exec(){
+        def script = Script.get(params.id)
+
+        def result = [:]
+
+        try {
+            scriptingService.exec(script)
+        } catch (Exception e){
+            result['error'] = "$e"
+            response.status = 422
+        }
+
+        render result as JSON
     }
 }

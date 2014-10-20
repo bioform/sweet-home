@@ -2,6 +2,10 @@
     <!-- toolbar -->
     <div ng-include="'/assets/app/scripts/editToolbar.htm'"></div>
 
+    <div ng-if="id != null" class="pull-right" style="margin-right: 40px">
+        <a ng-click="run()" href="" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Run</a>
+    </div>
+
     <h1>Script</h1>
 </div>
 

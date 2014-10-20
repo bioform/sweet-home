@@ -1,6 +1,7 @@
 package sweethome.scripting
 
 import sweethome.Device
+import util.SensorUtils
 
 class JsDevice {
     Device device
@@ -12,7 +13,7 @@ class JsDevice {
     def read(){
         def val
         device.withSensor { sensor ->
-            val = sensor.read()
+            val = SensorUtils.addCorrection( sensor.read(), device.coefficient, device.correction)
         }
         return val
     }

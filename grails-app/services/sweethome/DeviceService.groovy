@@ -9,6 +9,8 @@ import sweethome.sensors.SensorMetaInfo
 @Transactional
 class DeviceService {
 
+    def brokerMessagingTemplate
+
     SessionFactory sessionFactory
     SensorFactory  sensorFactory
     String lastException

@@ -13,10 +13,7 @@ class UrlMappings {
   ]
 
 	static mappings = {
-        "/" {
-            controller = "redirect"
-            destination = "/admin"
-        }
+        "/"(redirect: '/admin', permanent: true)
         "/admin**"(controller: 'home', action:'index')
 
         "/raw/devices"(controller: 'raw', action: 'index')
@@ -25,6 +22,10 @@ class UrlMappings {
         "/devices/$id/read"(controller: 'device', action: 'read')
         "/devices/$id?"(resources:'device', includes:['index', 'save'])
         "/locations/$id?"(resources:'location', includes:['index', 'save'])
+
+        "/scripts"(resources:'script', includes:['show', 'delete']){
+            "/exec"(controller: 'script', action: 'exec')
+        }
         "/scripts/$id?"(resources:'script', includes:['index', 'save'])
 
 

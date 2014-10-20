@@ -18,6 +18,11 @@ class ScriptController {
         render json
     }
 
+    def show(){
+        def json = Script.get(params.id) as JSON
+        render json
+    }
+
     @Transactional
     def save() {
         def script = params.id ? Script.get(params.id) : new Script()
@@ -28,13 +33,19 @@ class ScriptController {
         if(request.JSON.active != null)
             script.active = !!request.JSON.active
 
-        script.save()
+        script.save(flush: true)
 
         render script as JSON
     }
 
-    def exec(){
+    def delete(){
         def script = Script.get(params.id)
+        script.delete(flush: true)
+        render script as JSON
+    }
+
+    def exec(){
+        def script = Script.get(params.scriptId)
 
         def result = [:]
 

@@ -15,12 +15,13 @@
             <th>Name</th>
             <th>Cron Expression</th>
             <th>Active</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="script in scripts">
             <td>
-                <span ng-bind="script.name"></span>
+                <a ng-href="script/{{script.id}}" ng-bind="script.name"></a>
             </td>
             <td>
                 <span ng-bind="script.cronExpression"></span>
@@ -28,8 +29,8 @@
             <td>
                 <input type="checkbox" ng-model="script.active" ng-change="save(script)" ng-disabled="!script.cronExpression">
             </td>
-            <td>
-                <a ng-href="script/{{script.id}}" class="glyphicon glyphicon-pencil"></a>
+            <td align="right">
+                <a href="" confirmed-click="remove(script)" ng-confirm-click="Are you sure?" class="glyphicon glyphicon-remove"></a>
             </td>
         </tr>
     </tbody>

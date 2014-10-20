@@ -1,4 +1,4 @@
-angular.module( 'commonDirectives', [
+angular.module( 'sweethome.inlineEdit', [
 
 ])
 .directive('stopEvent', function () {

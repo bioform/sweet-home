@@ -6,7 +6,7 @@ class JsLog {
 
     public JsLog(def brokerMessagingTemplate, def id){
         this.brokerMessagingTemplate = brokerMessagingTemplate
-        this.topic = "/script/$id/logs"
+        this.topic = "/topic/script/$id/logs"
     }
 
     def debug(String msg){

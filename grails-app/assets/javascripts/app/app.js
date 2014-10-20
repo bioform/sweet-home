@@ -17,7 +17,8 @@ var app = angular.module('sweetHome', [
     'scriptControllers',
     'wsService',
     'logsPanel',
-    'commonDirectives'
+    'sweethome.inlineEdit',
+    'sweethome.directives'
 ]);
 
 app.config(['$locationProvider', '$routeProvider', 'cfpLoadingBarProvider', 'notificationServiceProvider',

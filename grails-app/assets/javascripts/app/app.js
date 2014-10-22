@@ -8,6 +8,7 @@ var app = angular.module('sweetHome', [
     'ui.bootstrap',
     'xeditable',
     'ui.codemirror',
+    'luegg.directives',
 
     'deviceModel',
     'deviceControllers',

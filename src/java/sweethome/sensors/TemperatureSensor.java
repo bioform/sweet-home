@@ -46,11 +46,6 @@ public class TemperatureSensor implements Sensor {
     }
 
     @Override
-    public void write(Object value) {
-
-    }
-
-    @Override
     public String format(Object value) {
         if(value == null) return null;
 

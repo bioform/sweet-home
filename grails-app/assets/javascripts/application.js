@@ -24,6 +24,7 @@
 //
 //= require vendor/codemirror/codemirror-compressed.min
 //= require vendor/codemirror/ui-codemirror
+//= require vendor/scrollglue-2.0.3
 //= require vendor/offcanvas
 //
 //= require_full_tree app

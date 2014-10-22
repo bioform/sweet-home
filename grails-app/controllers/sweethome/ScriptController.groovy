@@ -2,6 +2,7 @@ package sweethome
 
 import grails.converters.JSON
 import grails.transaction.Transactional
+import org.codehaus.groovy.grails.web.json.JSONObject
 
 class ScriptController {
 
@@ -26,9 +27,8 @@ class ScriptController {
     @Transactional
     def save() {
         def script = params.id ? Script.get(params.id) : new Script()
-        script.name = request.JSON.name
-        script.code = request.JSON.code
-        script.cronExpression = request.JSON.cronExpression
+
+        assignAttributes(script, ["name", "code", "cronExpression"])
 
         if(request.JSON.active != null)
             script.active = !!request.JSON.active
@@ -57,5 +57,14 @@ class ScriptController {
         }
 
         render result as JSON
+    }
+
+    private void assignAttributes(script, params){
+        for(String param:params){
+            if(request.JSON.containsKey(param)){
+                def val = request.JSON."$param"
+                script."$param" = JSONObject.NULL.equals(val) ? null:val
+            }
+        }
     }
 }

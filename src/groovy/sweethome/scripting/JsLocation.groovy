@@ -5,63 +5,76 @@ import sweethome.Location
 
 class JsLocation implements Map {
 
-    private Map deviceAddrMap
-    private Map deviceNameMap
+    private Map deviceAddrMap = new HashMap(4)
+    private Map deviceNameMap = new HashMap(4)
+    private boolean isDeviceLoaded
     Location location
+    JsHome home
 
-    public JsLocation(Location location){
+    public JsLocation(Location location, JsHome home){
         this.location = location
+        this.home = home
     }
 
     private void loadDevices() {
-        Device.list().each {
-            JsDevice device = new JsDevice(it)
-            deviceAddrMap.put device.addr, device
-            deviceNameMap.put device.title, device
+        Map addresses = this.deviceAddrMap
+        Map names = this.deviceNameMap
+        if( !this.isDeviceLoaded ) Device.list().each {
+            //println "---> $addresses"
+            //println "===> $names"
+            JsDevice device = new JsDevice(it, this, this.getHome())
+            addresses.put it.addr, device
+            names.put it.title, device
         }
+
+        this.isDeviceLoaded = true
     }
 
     @Override
     int size() {
-        if( deviceAddrMap == null){
+        if( !this.isDeviceLoaded ){
             loadDevices()
         }
-        return deviceAddrMap.size()
+        return this.deviceAddrMap.size()
     }
 
     @Override
     boolean isEmpty() {
-        if( deviceAddrMap == null){
+        if( !this.isDeviceLoaded ){
             loadDevices()
         }
-        return deviceAddrMap.isEmpty()
+        return this.deviceAddrMap.isEmpty()
     }
 
     @Override
     boolean containsKey(Object key) {
-        if( deviceAddrMap == null){
+        if( !this.isDeviceLoaded ){
             loadDevices()
         }
-        boolean result = deviceAddrMap.containsKey(key)
-        return result || deviceNameMap.containsKey(key)
+        boolean result = this.deviceAddrMap.containsKey(key)
+        return result || this.deviceNameMap.containsKey(key)
     }
 
     @Override
     boolean containsValue(Object value) {
-        if( deviceAddrMap == null){
+        if( !this.isDeviceLoaded ){
             loadDevices()
         }
-        boolean result = deviceAddrMap.containsValue(key)
-        return result || deviceNameMap.containsValue(key)
+        boolean result = this.deviceAddrMap.containsValue(key)
+        return result || this.deviceNameMap.containsValue(key)
     }
 
     @Override
     Object get(Object key) {
-        if( deviceAddrMap == null){
+        if( !this.isDeviceLoaded ){
             loadDevices()
         }
-        def result = deviceAddrMap.get(key)
-        return result || deviceNameMap.get(key)
+        def result = this.deviceAddrMap.get(key)
+
+        if( result == null){
+            result = this.deviceNameMap.get(key)
+        }
+        return result
     }
 
     @Override
@@ -86,16 +99,16 @@ class JsLocation implements Map {
 
     @Override
     Set keySet() {
-        return deviceNameMap.keySet()
+        return this.deviceNameMap.keySet()
     }
 
     @Override
     Collection values() {
-        return deviceNameMap.values()
+        return this.deviceNameMap.values()
     }
 
     @Override
     Set<Map.Entry> entrySet() {
-        return deviceNameMap.entrySet()
+        return this.deviceNameMap.entrySet()
     }
 }

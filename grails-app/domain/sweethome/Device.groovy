@@ -51,6 +51,15 @@ class Device {
         }
     }
 
+    Sensor getSensor(){
+        SensorMetaInfo meta = getMetaInfo()
+        if(meta != null){
+            return sensorFactory.get(meta, addr)
+        } else {
+            return null
+        }
+    }
+
     static mapping = {
         coefficient defaultValue: "1"
         correction  defaultValue: "0"

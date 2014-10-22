@@ -52,10 +52,10 @@ angular.module( 'scriptControllers', [
             $scope.run = function run(){
                 $http.get('/scripts/'+id+'/exec').
                     success(function(data, status, headers, config) {
-                        console.log("executed!");
+                        //console.log("executed!");
                     }).
                     error(function(data, status, headers, config) {
-                        console.log("execution error");
+                        //console.log("execution error");
                     });
             };
 

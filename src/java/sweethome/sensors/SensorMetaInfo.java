@@ -4,6 +4,9 @@ import sweethome.sensors.annotations.FrequencyOfMeasurements;
 import sweethome.sensors.annotations.Units;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SensorMetaInfo {
     private final String units;
@@ -31,5 +34,9 @@ public class SensorMetaInfo {
 
     public Constructor<Sensor> getConstructor() {
         return constructor;
+    }
+
+    public Method[] getMethods() {
+        return constructor.getDeclaringClass().getMethods();
     }
 }

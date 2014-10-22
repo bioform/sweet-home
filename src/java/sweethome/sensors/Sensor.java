@@ -11,12 +11,6 @@ public interface Sensor extends Closeable {
      */
     public Object read() throws Exception;
 
-    /**
-     * Write value
-     * @param value
-     */
-    public void write(Object value);
-
     public String format(Object value);
 
 

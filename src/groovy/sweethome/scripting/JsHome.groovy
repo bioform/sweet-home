@@ -5,9 +5,12 @@ import sweethome.sensors.Sensor
 import groovy.util.logging.Log4j
 
 @Log4j
-class JsHome extends HashMap {
+class JsHome implements Map<String, JsLocation> {
 
-    Map<Device, Sensor> sensors = [:]
+    @Delegate Map<String, JsLocation> locations = new HashMap<>()
+
+    private Map<String, Sensor> sensors = [:]
+
 
     JsDevice device(String deviceAddrOrName){
         JsDevice result = null
@@ -19,9 +22,12 @@ class JsHome extends HashMap {
         return result
     }
 
-    Sensor openSensor(Device device) {
-        Sensor sensor = device.sensor
-        sensors.put device, sensor
+    Sensor getSensor(Device device) {
+        Sensor sensor = sensors.get(device.addr)
+        if(sensor == null) {
+            sensor = device.sensor
+            sensors.put device.addr, sensor
+        }
         return sensor
     }
 

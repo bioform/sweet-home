@@ -79,7 +79,7 @@ class JsDevice extends AbstractJSObject{
 
     private getSensor(){
         if( !sensor ){
-            sensor = home.openSensor(device)
+            sensor = home.getSensor(device)
         }
         return sensor
     }

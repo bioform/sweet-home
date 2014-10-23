@@ -28,6 +28,7 @@ public class HomeNet {
                 list.add((OneWireContainer) owc_enum.nextElement());
             }
         } finally {
+            adapter.endExclusive();
             close(adapter);
         }
 
@@ -52,7 +53,6 @@ public class HomeNet {
     }
 
     public static void close(DSPortAdapter adapter) {
-        adapter.endExclusive();
         try {
             adapter.freePort();
         } catch (OneWireException e) {
@@ -61,13 +61,7 @@ public class HomeNet {
     }
 
     public static void close(OneWireContainer container) {
-        DSPortAdapter adapter = container.getAdapter();
-        adapter.endExclusive();
-        try {
-            adapter.freePort();
-        } catch (OneWireException e) {
-            // close quiet
-        }
+        close( container.getAdapter() );
     }
 
 }

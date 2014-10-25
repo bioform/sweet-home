@@ -42,8 +42,8 @@ angular.module( 'scriptControllers', [
             $scope.save = function save(){
                 $scope.script.$save(function(script){
                     if(script.id && !id){
-                        $routeParams.script_id = script.id;
-                        $ngSilentLocation.silent( "/script/" + script.id );
+                        id = $scope.id = $routeParams.script_id = script.id;
+                        $ngSilentLocation.silent( "/script/" + id );
                     }
                     notify.success("Script was saved")
                 });

@@ -29,8 +29,8 @@ angular.module( 'scriptControllers', [
             };
 
         }])
-    .controller('ScriptEditCtrl', ['$scope','$filter', 'Script', '$routeParams', '$location', 'notificationService', '$http',
-        function ($scope, $filter, Script, $routeParams, $location, notify, $http) {
+    .controller('ScriptEditCtrl', ['$scope','$filter', 'Script', '$routeParams', '$ngSilentLocation', 'notificationService', '$http',
+        function ($scope, $filter, Script, $routeParams, $ngSilentLocation, notify, $http) {
             var id = $scope.id = $routeParams.script_id;
             if(angular.isUndefined(id) || id === null ) {
                 $scope.script = new Script({code: "// Put your code here\n"});
@@ -42,10 +42,10 @@ angular.module( 'scriptControllers', [
             $scope.save = function save(){
                 $scope.script.$save(function(script){
                     if(script.id && !id){
-                        $location.path('script/'+script.id);
-                    } else {
-                        notify.success("Script was saved")
+                        $routeParams.script_id = script.id;
+                        $ngSilentLocation.silent( "/script/" + script.id );
                     }
+                    notify.success("Script was saved")
                 });
             };
 

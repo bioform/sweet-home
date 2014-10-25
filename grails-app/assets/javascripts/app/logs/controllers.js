@@ -2,8 +2,9 @@ angular.module( 'logsPanel', [
 
 ])
 
-    .controller('LogPanelCtrl', ['$rootScope', '$scope', '$routeParams', 'ws',
-        function($rootScope, $scope, $routeParams, ws) {
+    .controller('LogPanelCtrl', ['$rootScope', '$scope', '$routeParams', 'ws', '$element',
+        function($rootScope, $scope, $routeParams, ws, $element) {
+            $scope.routeParams = $routeParams;
             $scope.logs = [];
             $scope.clear = function clear(){
                 while($scope.logs.length) $scope.logs.pop();
@@ -33,10 +34,21 @@ angular.module( 'logsPanel', [
                 });
             }
 
-            $rootScope.$watch("showLogs", function(val){ if($scope.showLogs != val) $scope.showLogs = val; });
+            $rootScope.$watch("showLogs", function(val){
+                if($scope.showLogs != val) $scope.showLogs = val;
+                if(val){
+                    var addScroll = function addScroll() {
+                        var height = $element.children().first().outerHeight();
+                        $element.height(height);
+                    }
+                    setTimeout(addScroll, 0);
+                } else {
+                    $element.height(0);
+                }
+            });
 
-            $scope.$on('$routeChangeSuccess', function (event, current, previous) {
-                var newTopic = getTopic( current.params );
+            $scope.$watch('routeParams', function (params) {
+                var newTopic = getTopic( params );
                 if( newTopic != topic || !subscription){
                     // clear prev logs
                     $scope.logs = [];
@@ -50,7 +62,7 @@ angular.module( 'logsPanel', [
                         ws.connect({}, subscribe);
                     }
                 }
-            });
+            }, true);
 
         }])
 ;

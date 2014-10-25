@@ -17,7 +17,7 @@ public class OneWireServer implements Runnable{
             try {
                 // init one wire adapter
                 adapter = OneWireAccessProvider.getDefaultAdapter();
-                netAdapter = new NetAdapterHost(adapter, false);
+                netAdapter = new NetAdapterHost(adapter, true);
                 Thread thread = new Thread(netAdapter);
                 thread.start();
                 log.info("The following adapter was connected: " + adapter.getAdapterName() + ", port: " + adapter.getPortName());

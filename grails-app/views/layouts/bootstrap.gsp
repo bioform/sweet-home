@@ -57,26 +57,28 @@
 
     </div><!--/.container-->
 
-    <div class="panel panel-default navbar-fixed-bottom" ng-controller="LogPanelCtrl" ng-show="showLogs">
-      <div class="panel-heading">
-          <a ng-click="hide()" href="" class="glyphicon glyphicon-remove pull-right"></a>
-          <a ng-click="clear()" href="" class="glyphicon glyphicon-ban-circle pull-right" style="margin-right: 10px"></a>
-          <h3 class="panel-title">Logs</h3>
-      </div>
-      <div class="panel-body" scroll-glue="true">
-          <table class="table table-hover table-condensed">
-              <colgroup>
-                  <col class="col-xs-1">
-                  <col class="col-xs-7">
-              </colgroup>
-              <tbody>
-                  <tr ng-repeat="log in logs" ng-class="log.level">
-                      <td ng-bind="log.date | date:'yyyy-MM-dd HH:mm:ss'"></td>
-                      <td ng-bind="log.msg"></td>
-                  </tr>
-              </tbody>
-          </table>
-      </div>
+    <div ng-controller="LogPanelCtrl" ng-show="showLogs">
+        <div class="panel panel-default navbar-fixed-bottom">
+          <div class="panel-heading">
+              <a ng-click="hide()" href="" class="glyphicon glyphicon-remove pull-right"></a>
+              <a ng-click="clear()" href="" class="glyphicon glyphicon-ban-circle pull-right" style="margin-right: 10px"></a>
+              <h3 class="panel-title">Logs</h3>
+          </div>
+          <div class="panel-body" scroll-glue="true">
+              <table class="table table-hover table-condensed">
+                  <colgroup>
+                      <col class="col-xs-1">
+                      <col class="col-xs-7">
+                  </colgroup>
+                  <tbody>
+                      <tr ng-repeat="log in logs" ng-class="log.level">
+                          <td ng-bind="log.date | date:'yyyy-MM-dd HH:mm:ss'"></td>
+                          <td ng-bind="log.msg"></td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+        </div>
     </div>
 
   </body>

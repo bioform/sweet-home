@@ -3,7 +3,7 @@ var app = angular.module('sweetHome', [
     'ngSilent',
     'ngRoute',
     'angular-loading-bar',
-    'localization',
+    'pascalprecht.translate',
     'ui.notify',
     'ui.bootstrap',
     'xeditable',
@@ -22,8 +22,8 @@ var app = angular.module('sweetHome', [
     'sweethome.directives'
 ]);
 
-app.config(['$locationProvider', '$routeProvider', 'cfpLoadingBarProvider', 'notificationServiceProvider',
-    function($locationProvider, $routeProvider, cfpLoadingBarProvider, notificationServiceProvider) {
+app.config(['$locationProvider', '$routeProvider', 'cfpLoadingBarProvider', 'notificationServiceProvider', '$translateProvider',
+    function($locationProvider, $routeProvider, cfpLoadingBarProvider, notificationServiceProvider, $translateProvider) {
 
         // ajax loading bar
         cfpLoadingBarProvider.includeSpinner = true;
@@ -44,6 +44,19 @@ app.config(['$locationProvider', '$routeProvider', 'cfpLoadingBarProvider', 'not
             addclass: "stack-bottomright",
             stack: stack_bottomright
         });
+
+        $translateProvider
+            .useStaticFilesLoader({
+                prefix: '/assets/i18n/',
+                suffix: '.json'
+            })
+            .registerAvailableLanguageKeys(['en', 'ru'], {
+                'en_US': 'en',
+                'en_UK': 'en',
+                'ru_RU': 'ru'
+            })
+            .determinePreferredLanguage()
+            .fallbackLanguage('en');
 
     }]);
 

@@ -5,14 +5,19 @@ import grails.transaction.Transactional
 import sweethome.sensors.Sensor
 import util.SensorUtils
 
-class DeviceController {
+class DeviceController extends ApplicationController {
 
     def deviceService
     def trackingService
 
     def index() {
-        def list = params.sync ? deviceService.sync() : Device.list()
-        render list as JSON
+        def json
+        if(params.id != null){
+            json = Device.get(params.id)
+        } else {
+            json = params.sync ? deviceService.sync() : Device.list()
+        }
+        render json as JSON
     }
 
     @Transactional
@@ -21,14 +26,7 @@ class DeviceController {
 
         boolean wasTracked = device.tracked
 
-        if(request.JSON.title != null)
-            device.title = request.JSON.title
-
-        if(request.JSON.tracked != null)
-            device.tracked = !!request.JSON.tracked
-
-        if(request.JSON.frequency != null)
-            device.frequencyOfMeasurements = jsonInt('frequency')
+        assignAttributes(device, ["title", "tracked", "frequencyOfMeasurements"])
 
         if(request.JSON.location != null) {
             def newLocation = request.JSON.location
@@ -69,13 +67,5 @@ class DeviceController {
         } else {
             render status: 404, text: "Cannot find device with id \"${params.id}\""
         }
-    }
-
-    private Integer jsonInt(param){
-        def val = request.JSON."$param"
-        if( !(val instanceof Integer) ){
-            val = val && val.isInteger() ? val.toInteger() :  null
-        }
-        return val
     }
 }

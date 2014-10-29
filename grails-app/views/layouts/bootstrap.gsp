@@ -34,12 +34,12 @@
         </div>
         <div class="collapse navbar-collapse" ng-controller="MenuCtrl">
           <ul class="nav navbar-nav">
-            <li><a href="devices">Devices</a></li>
-            <li><a href="scripts">Scripts</a></li>
-            <li><a href="scheduler">Scheduler</a></li>
+            <li><a href="devices" translate="Devices"></a></li>
+            <li><a href="scripts" translate="Scripts"></a></li>
+            <li><a href="scheduler" translate="Scheduler"></a></li>
           </ul>
           <div class="navbar-form">
-            <a href="" ng-model="showLogs" btn-checkbox class="btn btn-default">Logs</a>
+            <a href="" ng-model="showLogs" btn-checkbox class="btn btn-default" translate="Logs"></a>
           </div>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->

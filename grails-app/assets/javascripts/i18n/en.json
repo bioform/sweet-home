@@ -1,0 +1,21 @@
+{
+    "Devices": "Devices",
+    "Scripts": "Scripts",
+    "Script": "Script",
+    "Scheduler": "Scheduler",
+    "Logs": "Logs",
+    "Location": "Location",
+    "Address": "Address",
+    "Code Name": "Code Name",
+    "Name": "Name",
+    "Readings": "Readings",
+    "Tracking": "Tracking",
+    "Add": "Add",
+    "Active": "Active",
+    "New Script": "New Script",
+    "Cron Expression": "Cron Expression",
+    "Activate me": "Activate me",
+    "Cancel": "Cancel",
+    "Save": "Save",
+    "Run": "Run"
+}

@@ -4,7 +4,7 @@ import grails.converters.JSON
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.web.json.JSONObject
 
-class ScriptController {
+class ScriptController extends ApplicationController {
 
     def scriptingService
 
@@ -57,14 +57,5 @@ class ScriptController {
         }
 
         render result as JSON
-    }
-
-    private void assignAttributes(script, params){
-        for(String param:params){
-            if(request.JSON.containsKey(param)){
-                def val = request.JSON."$param"
-                script."$param" = JSONObject.NULL.equals(val) ? null:val
-            }
-        }
     }
 }

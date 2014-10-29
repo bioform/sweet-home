@@ -1,53 +1,35 @@
-<div class="page-header">
-    <h1>Devices</h1>
-</div>
+<div class="row row-offcanvas row-offcanvas-right">
 
-<table class="table table-hover editable-cells">
-    <colgroup>
-        <col style="width: 1px">
-        <col class="col-xs-4">
-        <col class="col-xs-4">
-    </colgroup>
-    <thead>
-        <tr>
-            <th><a href="" class="glyphicon glyphicon-refresh" ng-click="sync()"></a></th>
-            <th>Location</th>
-            <th>Title</th>
-            <th>Address</th>
-            <th>Name</th>
-            <th>Readings</th>
-            <th>Tracking</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="device in devices | byLocation:locationFilter">
-            <td>
-                <span class="glyphicon glyphicon-ok-sign" ng-class="{green: device.enabled, hide: !device.enabled}" tooltip="Active"></span>
-            </td>
-            <td>
-                <a href="#" editable-select="device.location" onbeforesave="update(device, 'location', $data)" e-ng-options="l.name for l in emptyOption.concat(locations) track by l.id">
-                    {{ showLocation(device) }}
-                </a>
-            </td>
-            <td>
-                <span editable-text="device.title" onbeforesave="update(device, 'title', $data)">{{device.title}}</span>
-            </td>
-            <td ng-bind="device.addr"></td>
-            <td>
-                <span ng-bind="device.name" popover="{{device.desc}}" popover-trigger="mouseenter" popover-placement="left"></span>
-            </td>
-            <td>
-                <a href="" ng-if="device.readable" ng-init="readings = {formatted: 'read'}" ng-click="read(device, readings)" ng-bind="readings.formatted"></a>
-            </td>
-            <td>
-                <div ng-if="device.readable">
-                    <input type="checkbox" ng-model="device.tracked" ng-change="save(device)">
-                    &nbsp;
-                    <span class="item-wrapper frequency">
-                        <a editable-text="device.frequency" onbeforesave="update(device, 'frequency', $data, isIntOrEmpty)" href="" class="glyphicon glyphicon-time"></a>
-                    </span>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <div class="col-xs-12 col-sm-9">
+        <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+        </p>
+
+        <div ng-include="'/assets/app/devices/devices.htm'"></div>
+
+    </div><!--/span-->
+
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+
+        <h3 translate="Location"></h3>
+
+        <div id="locations" class="list-group">
+            <a href="" class="list-group-item" ng-repeat="l in locations" ng-model="locationFilter[l.id]" btn-checkbox>
+                <span class="glyphicon glyphicon-pencil pull-right" ng-click="edit.$show()" ng-hide="edit.$visible" stop-event></span>
+                <span ng-bind="l.name"  onbeforesave="updateLocation(l, $data)" editable-text="l.name" e-form="edit" buttons="no"></span>
+            </a>
+        </div>
+        <form class="form-inline" ng-submit="addLocation()">
+            <table style="width: 100%">
+                <tr>
+                    <td>
+                        <input ng-model="newLocation" type="text" class="form-control" style="width: 100%" placeholder="New Location">
+                    </td>
+                    <td style="width: 20%; padding-left: 5px">
+                        <button class="btn" style="display: block" translate="Add"></button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div><!--/span-->
+</div><!--/row-->

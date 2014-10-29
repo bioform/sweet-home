@@ -21,6 +21,8 @@
 //= require vendor/angularjs-i18n/sprintf
 //= require vendor/angularjs-i18n/localization
 //= require vendor/xeditable.min
+//= require vendor/angular-translate/angular-translate.min
+//= require vendor/angular-translate/angular-translate-loader-static-files.min
 //
 //= require vendor/codemirror/codemirror-compressed.min
 //= require vendor/codemirror/ui-codemirror

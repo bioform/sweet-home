@@ -1,11 +1,11 @@
 angular.module( 'deviceControllers', [
-
+    'deviceEditCtrl'
 ])
 
     .config(['$routeProvider', function config( $routeProvider ) {
         $routeProvider.
             when('/devices', {
-                templateUrl: '/assets/app/devices/devices.htm',
+                templateUrl: '/assets/app/devices/list.htm',
                 controller: 'DeviceListCtrl',
                 menu: 'devices'
             })
@@ -60,7 +60,7 @@ angular.module( 'deviceControllers', [
 
             // Location related part
             $scope.locationFilter = {};
-            $scope.locations = Location.query()
+            $scope.locations = Location.query();
             $scope.addLocation = function addLocation(){
                 var item = Location.save({name: $scope.newLocation});
                 $scope.locations.push(item);

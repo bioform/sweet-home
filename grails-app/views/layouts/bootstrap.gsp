@@ -39,7 +39,7 @@
             <li><a href="scheduler" translate="Scheduler"></a></li>
           </ul>
           <div class="navbar-form">
-            <a href="" ng-model="showLogs" btn-checkbox class="btn btn-default" translate="Logs"></a>
+            <a href="" ng-model="showLogs" btn-checkbox class="btn btn-default">{{'Logs' | translate}}</a>
           </div>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->

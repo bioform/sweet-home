@@ -5,6 +5,7 @@ import sweethome.sensors.annotations.Units;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public class SensorMetaInfo {
     private final String units;
     private final Constructor<Sensor> constructor;
     private final Integer frequencyOfMeasurements;
+    private final Class type;
 
     public SensorMetaInfo(Constructor<Sensor> constructor) {
         Class<Sensor> clazz = constructor.getDeclaringClass();
@@ -22,6 +24,11 @@ public class SensorMetaInfo {
 
         final FrequencyOfMeasurements frequencyAnn = clazz.getAnnotation(FrequencyOfMeasurements.class);
         this.frequencyOfMeasurements = (frequencyAnn != null) ? frequencyAnn.value() : null;
+        try {
+            this.type = clazz.getMethod("read").getReturnType();
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Cannot find mandatory method \"read()\"", e);
+        }
     }
 
     public String getUnits() {
@@ -38,5 +45,9 @@ public class SensorMetaInfo {
 
     public Method[] getMethods() {
         return constructor.getDeclaringClass().getMethods();
+    }
+
+    public Class getType() {
+        return type;
     }
 }

@@ -18,6 +18,7 @@ class UrlMappings {
 
         "/raw/devices"(controller: 'raw', action: 'index')
         "/jobs"(controller: 'job', action: 'index')
+        "/measurements/${id}.json"(controller: 'measurements', action: 'index')
 
         "/devices/$id/read"(controller: 'device', action: 'read')
         "/devices/$id?"(resources:'device', includes:['index', 'save'])

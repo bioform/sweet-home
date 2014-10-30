@@ -19,7 +19,8 @@ var app = angular.module('sweetHome', [
     'wsService',
     'logsPanel',
     'sweethome.inlineEdit',
-    'sweethome.directives'
+    'sweethome.directives',
+    'measurementsCharts'
 ]);
 
 app.config(['$locationProvider', '$routeProvider', 'cfpLoadingBarProvider', 'notificationServiceProvider', '$translateProvider',

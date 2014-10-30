@@ -20,10 +20,16 @@ class TrackingJob {
                     // write raw and corrected data to tracking history
                     def history
                     if(raw instanceof Double){
-                        history = new TrackingHistoryDouble([raw: raw, value: correctedValue])
+                        history = new TrackingHistoryDouble([device: device, raw: raw, value: correctedValue])
                     }
                     if(history){
-                        history.save()
+                        if( !history.save() ){
+                            StringBuilder sb = new StringBuilder()
+                            if( history.hasErrors() ) {
+                                history.errors.each { sb << "\n$it" }
+                            }
+                            log.error "Cannot save tracking history for \"${device.name}\" (addr: \"${device.addr}\"). $sb"
+                        }
                     }
                     else {
                         log.error "Cannot find tracking history table for type \"${raw.class.getSimpleName()}\""

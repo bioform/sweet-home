@@ -24,6 +24,9 @@
 //= require vendor/angular-translate/angular-translate.min
 //= require vendor/angular-translate/angular-translate-loader-static-files.min
 //
+//= require vendor/rickshaw/d3.v3
+//= require vendor/rickshaw/rickshaw.min
+//
 //= require vendor/codemirror/codemirror-compressed.min
 //= require vendor/codemirror/ui-codemirror
 //= require vendor/scrollglue-2.0.3

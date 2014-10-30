@@ -24,7 +24,7 @@ class Device {
     
     boolean enabled
 
-    SensorMetaInfo metaInfo
+    private SensorMetaInfo metaInfo
 
     boolean isReadable(){
         SensorMetaInfo meta = getMetaInfo()

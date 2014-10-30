@@ -19,7 +19,11 @@ angular.module( 'activeMenu', [
                 });
             })
 
-            $scope.$watch("showLogs", function(val){ if($rootScope.showLogs != val) $rootScope.showLogs = val; });
-            $rootScope.$watch("showLogs", function(val){ if($scope.showLogs != val) $scope.showLogs = val; });
+            $scope.$watch("showLogs", function(val){
+                if($rootScope.showLogs != val) $rootScope.showLogs = val;
+            });
+            $rootScope.$watch("showLogs", function(val){
+                if($scope.showLogs != val) $scope.showLogs = val;
+            });
         }])
 ;

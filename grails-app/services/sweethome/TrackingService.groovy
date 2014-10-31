@@ -20,34 +20,38 @@ class TrackingService {
             schedule( Device.findAllByEnabled(true) )
         }
     }
+    TrackingHistory track(Device device, Object raw, Object correctedValue){
+        def history
 
-    @grails.events.Listener
-    def newDevices(List devices){
+        def type = device.metaInfo.type
+        def measurementsModel
 
-        String msg = "${devices.size()} devices was added"
-        log.debug msg
-        brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'success', msg: msg]
+        if( raw instanceof Double || Double.isAssignableFrom(type) ){
+            measurementsModel = TrackingHistoryDouble
+        }
+        if(measurementsModel){
+            history = measurementsModel.create()
+        }
+        history.device = device
+        history.raw = raw
+        history.value = correctedValue
 
-        schedule devices
+
+        if(history){
+            if( !history.save() ){
+                StringBuilder sb = new StringBuilder()
+                if( history.hasErrors() ) {
+                    history.errors.each { sb << "\n$it" }
+                }
+                log.error "Cannot save tracking history for \"${device.name}\" (addr: \"${device.addr}\"). $sb"
+            }
+        }
+        return history
     }
 
-    @grails.events.Listener
-    def enableDevices(List<Device> devices){
-
-        String msg = "${devices.size()} devices was enabled"
-        log.debug msg
-        brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'info', msg: msg]
-
-        schedule devices
-    }
-
-    @grails.events.Listener
-    def disableDevices(List<Device> devices){
+    @grails.events.Listener(topic = "disableDevices")
+    def unschedule(List<Device> devices){
         int count = 0
-
-        String msg = "${devices.size()} devices was disabled"
-        log.debug msg
-        brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'danger', msg: msg]
 
         Map<String, TriggerDescriptor> triggersMap = getTrackingJobTriggers()
         devices.each {
@@ -58,32 +62,71 @@ class TrackingService {
                 count++
             }
         }
-        log.info "$count devices was removed from tracking (was: ${triggersMap.size()})"
+
+        if(count > 0){
+            String msg = "${devices.size()} devices were removed from tracking"
+            log.info msg
+            brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'danger', msg: msg]
+        }
     }
 
-    private void schedule(Collection<Device> devices){
+    @grails.events.Listener(topic = "enableDevices newDevices")
+    void schedule(Collection<Device> devices){
         int count = 0
+        int rescheduledCount = 0
+
         Map<String, TriggerDescriptor> triggersMap = getTrackingJobTriggers()
         devices.each {
             if(it.enabled && it.frequencyOfMeasurements && it.tracked) {
-                if( triggersMap.containsKey( it.id.toString() ) ){
+                TriggerDescriptor triggerDescriptor = triggersMap.get(it.id.toString())
+                long frequencyOfMeasurements = it.frequencyOfMeasurements*1000 // convert seconds to milliseconds
+
+                // check repeat interval
+                boolean rescheduled = false
+                if( triggerDescriptor ){
+                    long repeatInterval = ((SimpleTrigger)triggerDescriptor.trigger).repeatInterval;
+                    if( repeatInterval != frequencyOfMeasurements ){
+                        quartzScheduler.unscheduleJob(triggerDescriptor.trigger.key)
+                        triggerDescriptor = null
+                        rescheduled = true
+                    }
+                }
+
+                if( triggerDescriptor ){
                     log.warn("Device \"${it.addr}\" is already tracked")
                 } else {
 
                     String jobName = "xxx" //but it should be TrackingJob.class.name, but doesn't work with a proper value. It looks like a but in the plugin
                     String jobGroup = "tracking"
-                    long repeatInterval = it.frequencyOfMeasurements*1000 // convert seconds to milliseconds
+                    long repeatInterval = frequencyOfMeasurements
                     int repeatCount = SimpleTrigger.REPEAT_INDEFINITELY
 
                     Trigger trigger = TriggerUtils.buildSimpleTrigger(jobName, jobGroup, repeatInterval, repeatCount)
                     trigger.description = it.id.toString() // set device ID to associate this trigger with device
 
                     TrackingJob.schedule(trigger, [device: it])
-                    count++
+
+                    if(!rescheduled){
+                        count++
+                    } else {
+                        rescheduledCount++
+                    }
                 }
             }
         }
-        log.info "$count devices was added to tracking (was: ${triggersMap.size()})"
+
+        if(count > 0){
+            String msg = "$count devices were added for tracking"
+            log.info msg
+            brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'info', msg: msg]
+        }
+
+
+        if(rescheduledCount > 0){
+            String msg = "$rescheduledCount device tracking jobs were rescheduled"
+            log.info msg
+            brokerMessagingTemplate.convertAndSend "/topic/logs", [date: new Date(), level: 'info', msg: msg]
+        }
     }
 
     private Map<String, TriggerDescriptor> getTrackingJobTriggers(){

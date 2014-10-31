@@ -17,6 +17,8 @@ class ApplicationController {
                 def val
                 if( Integer.isAssignableFrom(type) ) {
                     val = jsonInt(param)
+                } else if( Float.isAssignableFrom(type) ){
+                    val = jsonFloat(param)
                 } else if( boolean.isAssignableFrom(type) ){
                     val = !!request.JSON."$param"
                 } else {
@@ -25,6 +27,14 @@ class ApplicationController {
                 item."$param" = JSONObject.NULL.equals(val) ? null:val
             }
         }
+    }
+
+    Float jsonFloat(String param) {
+        def val = request.JSON."$param"
+        if( !(val instanceof Float) && !(val instanceof Integer) ){
+            val = val ? Float.valueOf(val.toString()) :  null
+        }
+        return val
     }
 
     private Integer jsonInt(param){

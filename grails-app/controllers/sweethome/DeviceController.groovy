@@ -24,23 +24,14 @@ class DeviceController extends ApplicationController {
     def save() {
         def device = Device.get(params.id)
 
-        boolean wasTracked = device.tracked
-
-        assignAttributes(device, ["title", "tracked", "frequencyOfMeasurements"])
+        assignAttributes(device, ["title", "tracked", "frequencyOfMeasurements","coefficient", "correction"])
 
         if(request.JSON.location != null) {
             def newLocation = request.JSON.location
             device.location = newLocation.asBoolean() ? Location.get(newLocation.id) : null
         }
 
-        if( device.save() && device.enabled){
-            if(device.tracked != wasTracked){
-                if(device.tracked)
-                    trackingService.enableDevices([device])
-                else
-                    trackingService.disableDevices([device])
-            }
-        }
+        device.save(flush: true, failOnError: true)
 
         // set previous status since we don't retrieve it from 1-Wire
         device.enabled = request.JSON.enabled
@@ -52,10 +43,16 @@ class DeviceController extends ApplicationController {
         def device = Device.get(params.id)
 
         if(device != null){
+            def meta = device.metaInfo
+
             device.withSensor { sensor ->
                 if(sensor) {
-                    def val = SensorUtils.addCorrection( sensor.read(), device.coefficient, device.correction)
-                    def formatted = sensor.format(val)
+                    def raw = sensor.read()
+                    def val = SensorUtils.addCorrection( raw, device.coefficient, device.correction)
+                    def formatted = "$val ${meta.units}"
+
+                    // save measurements to tracking history table
+                    trackingService.track(device, raw, val)
 
                     def readings = [val: val, formatted: formatted]
 

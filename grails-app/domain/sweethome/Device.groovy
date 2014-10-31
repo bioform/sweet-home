@@ -6,6 +6,7 @@ import sweethome.sensors.SensorMetaInfo
 
 class Device {
     def sensorFactory
+    def trackingService
 
     String addr
     String name
@@ -20,7 +21,9 @@ class Device {
      * Frequency Of Measurements in seconds (it can be null)
      */
     Integer frequencyOfMeasurements
+    boolean frequencyOfMeasurementsChanged
     boolean tracked
+    boolean trackedChanged
     
     boolean enabled
 
@@ -70,5 +73,24 @@ class Device {
         frequencyOfMeasurements nullable:true
     }
     
-    static transients = ['metaInfo']
+    static transients = ['metaInfo', 'frequencyOfMeasurementsChanged', 'trackedChanged']
+
+    def beforeUpdate() {
+        frequencyOfMeasurementsChanged = this.isDirty('frequencyOfMeasurements')
+        trackedChanged                 = this.isDirty('tracked')
+        return true //Indicates that the update can proceed
+    }
+
+    def afterUpdate() {
+        if(trackedChanged || frequencyOfMeasurementsChanged) {
+            if(tracked && enabled){
+                trackingService.schedule( [this] )
+            } else {
+                trackingService.unschedule( [this] )
+            }
+            frequencyOfMeasurementsChanged = false
+            trackedChanged = false
+        }
+
+    }
 }

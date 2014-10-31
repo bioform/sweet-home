@@ -8,6 +8,7 @@ class TrackingJob {
 
     def group = "tracking"
     def deviceService
+    def trackingService
 
     def execute(context) {
         synchronized (deviceService){
@@ -18,24 +19,14 @@ class TrackingJob {
                     def correctedValue = SensorUtils.addCorrection( raw, device.coefficient, device.correction)
 
                     // write raw and corrected data to tracking history
-                    def history
-                    if(raw instanceof Double){
-                        history = new TrackingHistoryDouble([device: device, raw: raw, value: correctedValue])
-                    }
-                    if(history){
-                        if( !history.save() ){
-                            StringBuilder sb = new StringBuilder()
-                            if( history.hasErrors() ) {
-                                history.errors.each { sb << "\n$it" }
-                            }
-                            log.error "Cannot save tracking history for \"${device.name}\" (addr: \"${device.addr}\"). $sb"
-                        }
-                    }
-                    else {
+                    def history = trackingService.track(device, raw, correctedValue)
+
+                    if( !history ){
                         log.error "Cannot find tracking history table for type \"${raw.class.getSimpleName()}\""
                     }
                 } else {
                     log.error "Cannot find device with address \"${device.addr}\""
+                    trackingService.track(device, null, null)
                 }
             }
         }

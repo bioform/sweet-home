@@ -45,7 +45,7 @@ angular.module('measurementsCharts',[
 
                     var hoverDetail = new Rickshaw.Graph.HoverDetail({
                         graph: graph,
-                        yFormatter: function(y) { return Math.round(y*100)/100 + " " + scope.units},
+                        yFormatter: function(y) { return y + " " + scope.units},
                         formatter: function(series, x, y, formattedX, formattedY){
                             return formattedY;
                         }

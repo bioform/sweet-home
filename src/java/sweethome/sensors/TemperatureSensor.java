@@ -17,8 +17,6 @@ public class TemperatureSensor implements Sensor {
 
     // temperature display mode
     private int tempMode = CELSIUS;
-    // temperature unit
-    private String tempUnit = " C°";
 
     private final TemperatureContainer tc;
 
@@ -42,30 +40,27 @@ public class TemperatureSensor implements Sensor {
         if (tempMode == FAHRENHEIT)
             lastTemp = convertToFahrenheit(lastTemp);
 
-        return lastTemp;
+        return (( int ) (lastTemp * 100)) / 100.0;
     }
 
     @Override
-    public String format(Object value) {
-        if(value == null) return null;
-
-        Double lastTemp = toDouble(value);
-        return "" + (( int ) (lastTemp * 100)) / 100.0 + tempUnit;
+    public void close() {
+        HomeNet.close((OneWireContainer) tc);
     }
 
     /** Convert a temperature from Celsius to Fahrenheit. */
-    static double convertToFahrenheit (double celsiusTemperature)
+    public static double convertToFahrenheit (double celsiusTemperature)
     {
         return ( double ) (celsiusTemperature * 9.0 / 5.0 + 32.0);
     }
 
     /** Convert a temperature from Fahrenheit to Celsius.  */
-    static double convertToCelsius (double fahrenheitTemperature)
+    public static double convertToCelsius (double fahrenheitTemperature)
     {
         return ( double ) ((fahrenheitTemperature - 32.0) * 5.0 / 9.0);
     }
 
-    static Double toDouble(Object val){
+    public static Double toDouble(Object val){
         if(val == null){
             return null;
         }
@@ -74,10 +69,5 @@ public class TemperatureSensor implements Sensor {
         } else {
             return Double.valueOf(String.valueOf(val));
         }
-    }
-
-    @Override
-    public void close() {
-        HomeNet.close((OneWireContainer) tc);
     }
 }

@@ -3,7 +3,7 @@ angular.module('measurementsCharts',[
 ])
     .config(['$routeProvider', function config( $routeProvider ) {
         $routeProvider.
-            when('/measurements', {
+            when('/measurements/:id', {
                 templateUrl: '/assets/app/charts/measurements.htm',
                 controller: 'MeasurementsCtrl',
                 menu: 'measurements'
@@ -31,7 +31,7 @@ angular.module('measurementsCharts',[
                         width: attrs.width,
                         height: attrs.height,
                         padding: {
-                            top: 0.07
+                            top: 0.12
                         },
                         series: [{data: scope.data, color: attrs.color}],
                         renderer: scope.renderer
@@ -56,13 +56,14 @@ angular.module('measurementsCharts',[
             }
         }
     })
-    .controller('MeasurementsCtrl', function ($scope, $http) {
+    .controller('MeasurementsCtrl', ['$scope','$http','$routeParams',
+        function ($scope, $http, $routeParams) {
+            var id = $routeParams.id
+            $scope.renderer = 'line';
 
-        $scope.renderer = 'line';
-
-        $http.get('/measurements/1.json').success(function(result){
-            $scope.measurements = result.measurements;
-            $scope.device = result.device;
-            $scope.units = result.units;
-        })
-    });
+            $http.get('/measurements/'+id+'.json').success(function(result){
+                $scope.measurements = result.measurements;
+                $scope.device = result.device;
+                $scope.units = result.units;
+            })
+    }]);

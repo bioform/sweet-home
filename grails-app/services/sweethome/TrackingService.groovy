@@ -70,7 +70,16 @@ class TrackingService {
         }
     }
 
-    @grails.events.Listener(topic = "enableDevices newDevices")
+    @grails.events.Listener
+    def newDevices(List<Device> devices){
+        schedule devices
+    }
+
+    @grails.events.Listener
+    def enableDevices(List<Device> devices){
+        schedule devices
+    }
+
     void schedule(Collection<Device> devices){
         int count = 0
         int rescheduledCount = 0

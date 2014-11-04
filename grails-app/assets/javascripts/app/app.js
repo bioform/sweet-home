@@ -9,6 +9,7 @@ var app = angular.module('sweetHome', [
     'xeditable',
     'ui.codemirror',
     'luegg.directives',
+    'daterangepicker',
 
     'deviceModel',
     'deviceControllers',

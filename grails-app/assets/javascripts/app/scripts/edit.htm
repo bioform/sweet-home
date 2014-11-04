@@ -1,16 +1,15 @@
-<div class="page-header">
-    <!-- toolbar -->
-    <div ng-include="'/assets/app/scripts/editToolbar.htm'"></div>
-
-    <div ng-if="id != null" class="pull-right" style="margin-right: 40px">
-        <a ng-click="run()" href="" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> <span translate="Run"></span></a>
-    </div>
-
-    <h1 translate="Script"></h1>
-</div>
-
-
 <form id="script_form" role="form" class="form-horizontal" ng-submit="save()">
+
+    <div class="page-header">
+        <!-- toolbar -->
+        <div ng-include="'/assets/app/scripts/editToolbar.htm'"></div>
+
+        <div ng-if="id != null" class="pull-right" style="margin-right: 40px">
+            <a ng-click="run()" href="" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> <span translate="Run"></span></a>
+        </div>
+
+        <h1 translate="Script"></h1>
+    </div>
 
     <!-- edit form -->
     <div class="form-group">

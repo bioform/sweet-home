@@ -1,14 +1,13 @@
-<div class="page-header">
-    <!-- toolbar -->
-    <div ng-include="'/assets/app/devices/editToolbar.htm'"></div>
-    <h1>Device Settings</h1>
-    <div class="subheader">
-        Address: {{device.addr}}
-    </div>
-</div>
-
-
 <form id="device_form" role="form" class="form-horizontal" ng-submit="save()">
+
+    <div class="page-header">
+        <!-- toolbar -->
+        <div ng-include="'/assets/app/devices/editToolbar.htm'"></div>
+        <h1>Device Settings</h1>
+        <div class="subheader">
+            Address: {{device.addr}}
+        </div>
+    </div>
 
     <!-- edit form -->
     <div class="form-group">
@@ -27,4 +26,5 @@
     <!-- toolbar -->
     <div ng-include="'/assets/app/devices/editToolbar.htm'"></div>
     <div class="clearfix"></div>
+
 </form>

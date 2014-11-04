@@ -61,9 +61,23 @@ angular.module('measurementsCharts',[
             var id = $routeParams.id
             $scope.renderer = 'line';
 
-            $http.get('/measurements/'+id+'.json').success(function(result){
-                $scope.measurements = result.measurements;
-                $scope.device = result.device;
-                $scope.units = result.units;
-            })
+            $scope.date = {startDate: null, endDate: null};
+
+            $scope.loadData = function loadData() {
+                var date = $scope.date;
+
+                $http({
+                    url: '/measurements/' + id + '.json',
+                    method: "GET",
+                    params: date.startDate || date.endDate ? date : null
+                })
+                .success(function (result) {
+                    $scope.measurements = result.measurements;
+                    $scope.device = result.device;
+                    $scope.units = result.units;
+                })
+            }
+
+            // initial load
+            $scope.loadData();
     }]);

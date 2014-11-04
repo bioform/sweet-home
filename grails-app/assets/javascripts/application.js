@@ -32,5 +32,9 @@
 //= require vendor/scrollglue-2.0.3
 //= require vendor/offcanvas
 //
+//= require vendor/moment/moment.min
+//= require vendor/bootstrap-daterangepicker/daterangepicker
+//= require vendor/angular-daterangepicker/angular-daterangepicker.min
+//
 //= require_full_tree app
 //= require_self

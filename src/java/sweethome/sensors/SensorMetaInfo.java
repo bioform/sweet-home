@@ -10,10 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SensorMetaInfo {
-    private final String units;
+    private final String[] units;
     private final Constructor<Sensor> constructor;
     private final Integer frequencyOfMeasurements;
     private final Class type;
+    private final String unitsStr;
 
     public SensorMetaInfo(Constructor<Sensor> constructor) {
         Class<Sensor> clazz = constructor.getDeclaringClass();
@@ -21,6 +22,7 @@ public class SensorMetaInfo {
 
         final Units unitsAnn = clazz.getAnnotation(Units.class);
         this.units = (unitsAnn != null) ? unitsAnn.value() : null;
+        this.unitsStr = units.length == 1 ? units[0]: units[0]+"/"+units[1];
 
         final FrequencyOfMeasurements frequencyAnn = clazz.getAnnotation(FrequencyOfMeasurements.class);
         this.frequencyOfMeasurements = (frequencyAnn != null) ? frequencyAnn.value() : null;
@@ -32,7 +34,14 @@ public class SensorMetaInfo {
     }
 
     public String getUnits() {
-        return units;
+        return unitsStr;
+    }
+
+    public String getUnitsForTrue(){
+        return units.length > 1 ? units[0] : null;
+    }
+    public String getUnitsForFalse(){
+        return units.length > 1 ? units[1] : null;
     }
 
     public Integer getFrequencyOfMeasurements() {

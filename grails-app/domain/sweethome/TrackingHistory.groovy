@@ -1,6 +1,7 @@
 package sweethome
 
 class TrackingHistory {
+    String name
     Device device
     Date dateCreated
 
@@ -9,6 +10,7 @@ class TrackingHistory {
     }
 
     static constraints = {
-
+        device nullable: true
+        name   nullable: true
     }
 }

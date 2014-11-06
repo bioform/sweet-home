@@ -16,8 +16,10 @@ class JsHome implements Map<String, JsLocation> {
         JsDevice result = null
 
         Device device= Device.findByAddrOrName(deviceAddrOrName, deviceAddrOrName)
-        if(device)
-            result = new JsDevice(device, this)
+        if(device) {
+            JsLocation location = new JsLocation(device.location, this)
+            result = new JsDevice(device, location, this)
+        }
 
         return result
     }

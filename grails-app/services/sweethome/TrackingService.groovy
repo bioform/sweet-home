@@ -5,6 +5,7 @@ import grails.plugins.quartz.TriggerUtils
 import grails.transaction.Transactional
 import org.quartz.SimpleTrigger
 import org.quartz.Trigger
+import org.quartz.impl.triggers.AbstractTrigger
 
 @Transactional
 class TrackingService {
@@ -110,7 +111,7 @@ class TrackingService {
                     long repeatInterval = frequencyOfMeasurements
                     int repeatCount = SimpleTrigger.REPEAT_INDEFINITELY
 
-                    Trigger trigger = TriggerUtils.buildSimpleTrigger(jobName, jobGroup, repeatInterval, repeatCount)
+                    AbstractTrigger trigger = TriggerUtils.buildSimpleTrigger(jobName, jobGroup, repeatInterval, repeatCount)
                     trigger.description = it.id.toString() // set device ID to associate this trigger with device
 
                     TrackingJob.schedule(trigger, [device: it])

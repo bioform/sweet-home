@@ -8,5 +8,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Units {
-    String value();
+
+    /**
+     * For boolean typed sensor you need to specify true and false units, for all other types - only one unit
+     * @return
+     */
+    String[] value();
 }

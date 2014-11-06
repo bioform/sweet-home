@@ -7,24 +7,32 @@ import java.util.*;
 
 class JsLocation implements Map {
 
-    private Map deviceAddrMap = new HashMap(4);
-    private Map deviceNameMap = new HashMap(4);
+    private final Map deviceAddrMap = new HashMap(4);
+    private final Map deviceNameMap = new HashMap(4);
+    private final Location location;
+    private final JsHome home;
+
     private boolean isDeviceLoaded;
-    Location location;
-    JsHome home;
 
     public JsLocation(Location location, JsHome home){
         this.location = location;
         this.home = home;
     }
 
+    public JsHome getHome() {
+        return home;
+    }
+
     private void loadDevices() {
-        if( !this.isDeviceLoaded ) for(Device it:(List<Device>)Device.list()) {
-            //println "---> $addresses"
-            //println "===> $names"
-            JsDevice device = new JsDevice(it, this, this.home);
-            this.deviceAddrMap.put( it.getAddr(), device );
-            this.deviceNameMap.put( it.getTitle(), device );
+        if( !this.isDeviceLoaded ) {
+            Set<Device> devices = location.getDevices();
+            for (Device it : devices) {
+                //println "---> $addresses"
+                //println "===> $names"
+                JsDevice device = new JsDevice(it, this, this.home);
+                this.deviceAddrMap.put(it.getAddr(), device);
+                this.deviceNameMap.put(it.getTitle(), device);
+            }
         }
 
         this.isDeviceLoaded = true;

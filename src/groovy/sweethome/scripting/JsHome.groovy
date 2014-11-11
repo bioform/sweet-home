@@ -34,14 +34,14 @@ class JsHome implements Map<String, JsLocation> {
     }
 
     void close(){
-        for(Map.Entry<Device, Sensor> ent:sensors){
-            Device device = ent.key
+        for(Map.Entry<String, Sensor> ent:sensors){
+            String addr = ent.key
             Sensor sensor = ent.value
             try {
                 if(sensor != null) sensor.close();
             } catch (Exception e){
                 // close quiet
-                log.error "Cannot close sensor ${device.addr}", e
+                log.error "Cannot close sensor ${addr}", e
             }
         }
     }

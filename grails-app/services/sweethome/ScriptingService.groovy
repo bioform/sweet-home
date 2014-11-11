@@ -10,22 +10,34 @@ import org.quartz.impl.triggers.AbstractTrigger
 import sweethome.scripting.JsHome
 import sweethome.scripting.JsLocation
 import sweethome.scripting.JsLog
+import sweethome.scripting.JsScript
 
 import javax.script.Bindings
 import javax.script.ScriptContext
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
+import javax.script.CompiledScript;
+import javax.script.Compilable;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 @Transactional
 class ScriptingService {
 
+    def quartzScheduler
+    def jobManagerService
     def brokerMessagingTemplate
 
     def exec(Script script) {
-        ScriptEngineManager engineManager = new ScriptEngineManager()
-        ScriptEngine engine = engineManager.getEngineByName("nashorn")
-        Bindings binding = engine.getBindings(ScriptContext.ENGINE_SCOPE)
+        //ScriptEngineManager engineManager = new ScriptEngineManager()
+        //ScriptEngine engine = engineManager.getEngineByName("nashorn")
+
+        NashornScriptEngineFactory factory = new NashornScriptEngineFactory()
+        //ScriptEngine engine = factory.getScriptEngine("-strict", "--no-java", "--no-syntax-extensions");
+        ScriptEngine engine = factory.getScriptEngine()
+
+        //Bindings binding = engine.getBindings(ScriptContext.ENGINE_SCOPE)
+        Bindings binding = engine.createBindings()
 
         JsLog jsLog = new JsLog(brokerMessagingTemplate, script.id)
 
@@ -36,9 +48,14 @@ class ScriptingService {
         binding.put "home", jsHome
         binding.put "log", jsLog
         binding.put "console", jsLog
+        binding.put "script", new JsScript()
 
         try {
-            engine.eval(script.code)
+            //engine.eval(script.code)
+
+            // instead of eval - just compile and eval
+            final CompiledScript compiledScript = ((Compilable)engine).compile(script.code)
+            compiledScript.eval(binding)
         } catch (ScriptException ex) {
             jsLog.log("error", null, ex.message)
             throw ex
@@ -62,8 +79,9 @@ class ScriptingService {
         TriggerDescriptor triggerDescriptor = triggersMap.get(script.id.toString())
         if(triggerDescriptor){
             // remove device tracking
-            quartzScheduler.unscheduleJob(triggerDescriptor.trigger.key)
-            count++
+            if( quartzScheduler.unscheduleJob(triggerDescriptor.trigger.key) ){
+                count++
+            }
         }
 
         if(count > 0){

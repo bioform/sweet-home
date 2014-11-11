@@ -110,8 +110,9 @@ log4j.main = {
 
     debug 'grails.app.controllers'
     debug 'grails.app.services'
-    trace 'org.hibernate.type.descriptor.sql.BasicBinder'
-    debug 'org.hibernate.SQL'
+
+    //trace 'org.hibernate.type.descriptor.sql.BasicBinder'
+    //debug 'org.hibernate.SQL'
 
     error  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP

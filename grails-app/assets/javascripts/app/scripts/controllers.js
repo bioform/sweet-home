@@ -39,14 +39,42 @@ angular.module( 'scriptControllers', [
                 $scope.script = Script.get({id: id});
             }
 
-            $scope.save = function save(){
-                $scope.script.$save(function(script){
-                    if(script.id && !id){
-                        id = $scope.id = $routeParams.script_id = script.id;
-                        $ngSilentLocation.silent( "/script/" + id );
+            $scope.save = function save(form){
+                var clearErrors = function clearErrors(form){
+                    angular.forEach(form.$error, function(fields, type){
+                        angular.forEach(fields, function(field){
+                            field.$setValidity(type, true);
+                        });
+                    });
+                };
+                $scope.script.$save(
+                    function(script) {
+                        if (script.id && !id) {
+                            id = $scope.id = $routeParams.script_id = script.id;
+                            $ngSilentLocation.silent("/script/" + id);
+                        }
+
+                        form.$setPristine();
+                        clearErrors(form);
+                        notify.success("Script was saved");
+                    },
+                    function(response) {
+                        if(response.status == 400) {
+                            var errors = response.data;
+                            angular.forEach(errors, function (err) {
+                                var field = form[err.field];//err.field
+                                if( field ){
+                                    field.$setValidity(err.code, false)
+                                    //err.message;
+                                }
+                            });
+                            notify.error("Validation errors");
+                        }
+                        else {
+                            notify.error("Server error");
+                        }
                     }
-                    notify.success("Script was saved")
-                });
+                );
             };
 
             $scope.run = function run(){

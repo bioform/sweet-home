@@ -1,14 +1,15 @@
-package sweethome.scripting;
+package sweethome.scripting
 
+import jdk.nashorn.api.scripting.AbstractJSObject;
 import sweethome.Device;
 import sweethome.Location;
 
 import java.util.*;
 
-class JsLocation implements Map {
+class JsLocation extends AbstractJSObject {
 
-    private final Map deviceAddrMap = new HashMap(4);
-    private final Map deviceNameMap = new HashMap(4);
+    private final Map<String, JsDevice> deviceAddrMap = new HashMap<>(4);
+    private final Map<String, JsDevice> deviceNameMap = new HashMap<>(4);
     private final Location location;
     private final JsHome home;
 
@@ -39,23 +40,7 @@ class JsLocation implements Map {
     }
 
     @Override
-    public int size() {
-        if( !this.isDeviceLoaded ){
-            loadDevices();
-        }
-        return this.deviceAddrMap.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        if( !this.isDeviceLoaded ){
-            loadDevices();
-        }
-        return this.deviceAddrMap.isEmpty();
-    }
-
-    @Override
-    public boolean containsKey(Object key) {
+    public boolean hasMember(String key) {
         if( !this.isDeviceLoaded ){
             loadDevices();
         }
@@ -64,16 +49,7 @@ class JsLocation implements Map {
     }
 
     @Override
-    public boolean containsValue(Object value) {
-        if( !this.isDeviceLoaded ){
-            loadDevices();
-        }
-        boolean result = this.deviceAddrMap.containsValue(value);
-        return result || this.deviceNameMap.containsValue(value);
-    }
-
-    @Override
-    public Object get(Object key) {
+    public Object getMember(String key) {
         if( !this.isDeviceLoaded ){
             loadDevices();
         }
@@ -86,26 +62,6 @@ class JsLocation implements Map {
     }
 
     @Override
-    public Object put(Object key, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object remove(Object key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void putAll(Map m) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Set keySet() {
         return this.deviceNameMap.keySet();
     }
@@ -113,10 +69,5 @@ class JsLocation implements Map {
     @Override
     public Collection values() {
         return this.deviceNameMap.values();
-    }
-
-    @Override
-    public Set<Map.Entry> entrySet() {
-        return this.deviceNameMap.entrySet();
     }
 }

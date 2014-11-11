@@ -3,9 +3,11 @@ package sweethome
 import grails.converters.JSON
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.web.json.JSONObject
+import org.springframework.context.MessageSource
 
 class ScriptController extends ApplicationController {
 
+    MessageSource messageSource
     def scriptingService
 
     def index() {
@@ -33,9 +35,20 @@ class ScriptController extends ApplicationController {
         if(request.JSON.active != null)
             script.active = !!request.JSON.active
 
-        script.save(flush: true)
+        if( script.save() ) {
+            render script as JSON
+        } else {
+            response.status = 400
+            render script.errors.allErrors.collect {
+                [
+                    field: it.field,
+                    rejectedValue: it.rejectedValue,
+                    code: (it.codes ? it.codes[it.codes.length-1] : '').tokenize('.').last(),
+                    message: message(error:it ,encodeAs:'HTML')
+                ]
+            } as JSON
+        }
 
-        render script as JSON
     }
 
     def delete(){

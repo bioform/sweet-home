@@ -1,5 +1,9 @@
 package sweethome
 
+import org.quartz.CronExpression
+
+import java.text.ParseException
+
 class Script {
 
     def scriptingService
@@ -18,7 +22,16 @@ class Script {
     }
 
     static constraints = {
-        cronExpression nullable:true
+        cronExpression nullable:true, validator: { val, obj, errors ->
+            // Validate cron expression
+            if( obj.active) {
+                try {
+                    CronExpression.validateExpression(val)
+                } catch (ParseException e) {
+                    errors.rejectValue('cronExpression', 'invalid.cronExpression')
+                }
+            }
+        }
     }
 
     static transients = ['cronExpressionChanged', 'activeChanged']
@@ -26,6 +39,7 @@ class Script {
     def beforeUpdate() {
         cronExpressionChanged = this.isDirty('cronExpression')
         activeChanged         = this.isDirty('active')
+
         return true //Indicates that the update can proceed
     }
 

@@ -12,6 +12,7 @@ import sweethome.scripting.JsLocation
 import sweethome.scripting.JsLog
 import sweethome.scripting.JsScript
 
+import javax.annotation.PostConstruct
 import javax.script.Bindings
 import javax.script.ScriptContext
 import javax.script.ScriptEngine
@@ -24,17 +25,23 @@ import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 @Transactional
 class ScriptingService {
 
+    private ScriptEngine engine
+
     def quartzScheduler
     def jobManagerService
     def brokerMessagingTemplate
 
-    def exec(Script script) {
+    @PostConstruct
+    def init() {
         //ScriptEngineManager engineManager = new ScriptEngineManager()
         //ScriptEngine engine = engineManager.getEngineByName("nashorn")
 
         NashornScriptEngineFactory factory = new NashornScriptEngineFactory()
         //ScriptEngine engine = factory.getScriptEngine("-strict", "--no-java", "--no-syntax-extensions");
-        ScriptEngine engine = factory.getScriptEngine()
+        engine = factory.getScriptEngine()
+    }
+
+    def exec(Script script) {
 
         //Bindings binding = engine.getBindings(ScriptContext.ENGINE_SCOPE)
         Bindings binding = engine.createBindings()

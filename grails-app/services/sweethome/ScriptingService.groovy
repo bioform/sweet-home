@@ -67,7 +67,7 @@ class ScriptingService {
             jsLog.log("error", null, ex.message)
             throw ex
         } catch(Exception e){
-            jsLog.log("error", null, ex)
+            jsLog.log("error", null, e)
             throw e
         } finally {
             jsHome.close()

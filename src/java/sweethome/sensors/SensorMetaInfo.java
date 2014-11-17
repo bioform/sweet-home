@@ -22,7 +22,7 @@ public class SensorMetaInfo {
 
         final Units unitsAnn = clazz.getAnnotation(Units.class);
         this.units = (unitsAnn != null) ? unitsAnn.value() : null;
-        this.unitsStr = units.length == 1 ? units[0]: units[0]+"/"+units[1];
+        this.unitsStr = (units == null) ? null : (units.length == 1 ? units[0]: units[0]+"/"+units[1]);
 
         final FrequencyOfMeasurements frequencyAnn = clazz.getAnnotation(FrequencyOfMeasurements.class);
         this.frequencyOfMeasurements = (frequencyAnn != null) ? frequencyAnn.value() : null;

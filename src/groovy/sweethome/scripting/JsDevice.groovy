@@ -7,6 +7,8 @@ import sweethome.sensors.SensorMetaInfo
 import util.SensorUtils
 
 class JsDevice extends AbstractJSObject{
+    private final static List<String> AVAILABLE_METHODS = ["addr", "title", "name", "location", "home", "read"]
+
     private final Device device
     private final JsLocation location
     private final JsHome home
@@ -33,7 +35,7 @@ class JsDevice extends AbstractJSObject{
     // do you have a property of that given name?
     @Override
     public boolean hasMember(String name) {
-        return "location".equals(name) || "home".equals(name) || availableMethods?.contains(name);
+        return AVAILABLE_METHODS.contains(name) || availableMethods?.contains(name);
     }
 
     // get the value of that named property

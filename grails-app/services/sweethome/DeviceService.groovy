@@ -62,7 +62,7 @@ class DeviceService {
         } catch (Exception e){
             String msg = "Cannot get device list. " + e
             if(msg != lastException){
-                log.error msg
+                log.error msg, e
                 lastException = msg
             }
         }

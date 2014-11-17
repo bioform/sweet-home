@@ -6,6 +6,7 @@ import com.dalsemi.onewire.container.OneWireContainer29;
 import sweethome.HomeNet;
 import sweethome.sensors.onewire.MemoryBank;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -221,6 +222,25 @@ public class Sensor29 implements Sensor{
     public void latchStateOff(int channel, boolean doSmart) throws OneWireException {
         byte[] state = getState();
         owd.setLatchState(channel, false, doSmart, state);
+        owd.writeDevice(state);
+    }
+
+    /**
+     * Write the latch state for all of the channels.
+     *
+     * @param set the state to set all of the channels, in the range [0 to (<code>getNumberChannels(byte[])</code> - 1)]
+     *
+     * @see #getLatchState(int)
+     * @see com.dalsemi.onewire.container.OneWireSensor#writeDevice(byte[])
+     */
+    public void writeLatchState (int set) throws OneWireException {
+        //byte[] bytes = ByteBuffer.allocate(4).putInt(set).array();
+        writeLatchState((byte) set);
+    }
+
+    public void writeLatchState (byte set) throws OneWireException {
+        byte[] state = getState();
+        owd.setLatchState(set, state);
         owd.writeDevice(state);
     }
 
@@ -442,7 +462,7 @@ public class Sensor29 implements Sensor{
      */
     public boolean getChannelPolarity(int channel) throws OneWireException {
         byte[] register = getRegister();
-        return owd.getChannelPolarity(channel,register);
+        return owd.getChannelPolarity(channel, register);
     }
 
     private byte[] getState() throws OneWireException {

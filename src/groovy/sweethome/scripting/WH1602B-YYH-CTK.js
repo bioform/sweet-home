@@ -1,3 +1,10 @@
+/**
+ This library allows an 1-Wire board to control LiquidCrystal displays (LCDs) based on
+ the Hitachi HD44780 (or a compatible) chipset, which is found on most text-based LCDs.
+ The library works with in either 4- or 8-bit mode
+ (i.e. using 4 or 8 data lines in addition to the rs, enable, and, optionally, the rw control lines).
+*/
+
 var Thread = Java.type("java.lang.Thread");
 var LiquidCrystalCharsetClass = Java.type("sweethome.charsets.WH1602B_YYH_CTK_Charset");
 var LiquidCrystalCharset = new LiquidCrystalCharsetClass();

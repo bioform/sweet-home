@@ -152,8 +152,8 @@ public class Sensor29 implements Sensor{
      *
      * @see com.dalsemi.onewire.container.OneWireSensor#readDevice()
      * @see #isHighSideSwitch()
-     * @see #latchStateOn(int, boolean)
-     * @see #latchStateOff(int, boolean)
+     * @see #latchStateOn(int)
+     * @see #latchStateOff(int)
      */
     public boolean getLatchState(int channel) throws OneWireException {
         byte[] state = getState();
@@ -172,8 +172,8 @@ public class Sensor29 implements Sensor{
      *
      * @return <code>true</code> if channels support 'smart on'
      *
-     * @see #latchStateOn(int, boolean)
-     * @see #latchStateOff(int, boolean)
+     * @see #latchStateOn(int)
+     * @see #latchStateOff(int)
      */
     public boolean hasSmartOn() {
         return owd.hasSmartOn();
@@ -187,18 +187,14 @@ public class Sensor29 implements Sensor{
      *     is returned from the <code>isHighSideSwitch()</code> method.
      *
      * @param channel channel to execute this operation, in the range [0 to (<code>getNumberChannels(byte[])</code> - 1)]
-     * @param doSmart If latchState is 'on'/<code>true</code> then doSmart indicates
-     *                  if a 'smart on' is to be done.  To avoid an exception
-     *                  check the capabilities of this device using the
-     *                  <code>hasSmartOn()</code> method.
      *
      * @see #hasSmartOn()
      * @see #getLatchState(int)
      * @see com.dalsemi.onewire.container.OneWireSensor#writeDevice(byte[])
      */
-    public void latchStateOn(int channel, boolean doSmart) throws OneWireException {
+    public void latchStateOn(int channel) throws OneWireException {
         byte[] state = getState();
-        owd.setLatchState(channel, true, doSmart, state);
+        owd.setLatchState(channel, true, true, state);
         owd.writeDevice(state);
     }
 
@@ -210,18 +206,14 @@ public class Sensor29 implements Sensor{
      *     is returned from the <code>isHighSideSwitch()</code> method.
      *
      * @param channel channel to execute this operation, in the range [0 to (<code>getNumberChannels(byte[])</code> - 1)]
-     * @param doSmart If latchState is 'on'/<code>true</code> then doSmart indicates
-     *                  if a 'smart on' is to be done.  To avoid an exception
-     *                  check the capabilities of this device using the
-     *                  <code>hasSmartOn()</code> method.
      *
      * @see #hasSmartOn()
      * @see #getLatchState(int)
      * @see com.dalsemi.onewire.container.OneWireSensor#writeDevice(byte[])
      */
-    public void latchStateOff(int channel, boolean doSmart) throws OneWireException {
+    public void latchStateOff(int channel) throws OneWireException {
         byte[] state = getState();
-        owd.setLatchState(channel, false, doSmart, state);
+        owd.setLatchState(channel, false, true, state);
         owd.writeDevice(state);
     }
 
@@ -465,7 +457,7 @@ public class Sensor29 implements Sensor{
         return owd.getChannelPolarity(channel, register);
     }
 
-    private byte[] getState() throws OneWireException {
+    public byte[] getState() throws OneWireException {
         if(!stateRead)
         {
             state = owd.readDevice();

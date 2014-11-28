@@ -1,5 +1,6 @@
 package sweethome
 
+import grails.compiler.GrailsCompileStatic
 import grails.plugins.quartz.TriggerDescriptor
 import grails.plugins.quartz.TriggerUtils
 import grails.transaction.Transactional
@@ -10,6 +11,7 @@ import org.quartz.impl.triggers.AbstractTrigger
 import sweethome.scripting.JsHome
 import sweethome.scripting.JsLocation
 import sweethome.scripting.JsLog
+import sweethome.scripting.JsResources
 import sweethome.scripting.JsScript
 
 import javax.annotation.PostConstruct
@@ -56,6 +58,7 @@ class ScriptingService {
         binding.put "log", jsLog
         binding.put "console", jsLog
         binding.put "script", new JsScript()
+        binding.put "resources", new JsResources()
 
         try {
             //engine.eval(script.code)

@@ -8,7 +8,11 @@ class JsResources extends AbstractJSObject {
         if(args.length != 1){
             throw new IllegalArgumentException("You should provide only script name")
         }
-        return getClass().getResource(args[1])
+        String path = args[0].toString().trim()
+        path = path.startsWith("/") ? path : ("/resources/"+path)
+        URL url = getClass().getResource(path)
+        Objects.requireNonNull(url, "Cannot find the resource file \"$path\"")
+        return url
     }
     // yes, I'm a function !
     @Override

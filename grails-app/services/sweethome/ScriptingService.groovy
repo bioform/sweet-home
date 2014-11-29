@@ -66,9 +66,9 @@ class ScriptingService {
             // instead of eval - just compile and eval
             final CompiledScript compiledScript = ((Compilable)engine).compile(script.code)
             compiledScript.eval(binding)
-        } catch (ScriptException ex) {
-            jsLog.log("error", null, ex.message)
-            throw ex
+        } catch (ScriptException e) {
+            jsLog.log("error", null, e.message)
+            throw e
         } catch(Exception e){
             jsLog.log("error", null, e)
             throw e

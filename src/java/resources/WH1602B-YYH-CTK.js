@@ -3,7 +3,7 @@
  the Hitachi HD44780 (or a compatible) chipset, which is found on most text-based LCDs.
  The library works with in either 4- or 8-bit mode
  (i.e. using 4 or 8 data lines in addition to the rs, enable, and, optionally, the rw control lines).
-*/
+ */
 
 var Thread = Java.type("java.lang.Thread");
 var LiquidCrystalCharsetClass = Java.type("sweethome.charsets.WH1602B_YYH_CTK_Charset");
@@ -18,7 +18,7 @@ function LiquidCrystal(device){
     this.begin = function begin(){
         var d = that.device;
 
-        d.resetModeOn();
+        d.resetModeOff();
 
         /*
          d.writeLatchState(0xE3);
@@ -26,7 +26,7 @@ function LiquidCrystal(device){
          d.writeLatchState(0xE3);
          Thread.sleep(100);
          d.writeLatchState(0xE3);
-        */
+         */
 
         // switch to 4-bit interface (8-bit interface). Low bytes are always 0
         d.writeLatchState(0xE2);
@@ -40,8 +40,29 @@ function LiquidCrystal(device){
         d.writeLatchState(0xE0 | displayControl);
 
         // clear display
-        d.writeLatchState(0xE0);
-        d.writeLatchState(0xE1);
+        that.clear();
+    };
+
+    this.firstLine = function firstLine(){
+        // 1000 0000
+        that.device.writeLatchState(0xE8);
+        that.device.writeLatchState(0xE0);
+    };
+
+    this.secondLine = function secondLine(){
+        // 1100 0000
+        that.device.writeLatchState(0xEC);
+        that.device.writeLatchState(0xE0);
+    };
+
+    this.clear = function clear(){
+        that.device.writeLatchState(0xE0);
+        that.device.writeLatchState(0xE1);
+    };
+
+    this.home = function home(){
+        that.device.writeLatchState(0xE0);
+        that.device.writeLatchState(0xE2);
     };
 
     this.blink = function blink(){
